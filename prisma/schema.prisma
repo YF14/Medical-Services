@@ -9,3 +9,45 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+ id String @id @default(uuid()) @db.Uuid
+   email     String   @unique @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    String   @db.Uuid   @unique 
+  setting   Setting  @relation(fields: [settingId], references: [id])
+  address   Address  @relation(fields: [addressId], references: [id])
+  addressId String   @db.Uuid   @unique 
+  settingId String   @db.Uuid   @unique 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+   id String @id @default(uuid()) @db.Uuid
+  city   String
+  street String
+  user   User?
+}
+
+model Role {
+  id String @id @default(uuid()) @db.Uuid
+  name     String   @default("user") @db.VarChar(255)
+  isVerify Boolean? @default(true)
+
+  User User?
+}
+
+model Setting {
+   id String @id @default(uuid()) @db.Uuid
+
+  avatar   String
+  language String   @default("ar") @db.VarChar(9)
+  darkmode Boolean  @default(false)
+  bio      String   @db.VarChar(255)
+  dob      DateTime
+  gender   String   @db.VarChar(9)
+  User User?
+}
