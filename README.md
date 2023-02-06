@@ -6,9 +6,8 @@ Install my-project with npm
 ```bash
 npm i 
 # note for migration file and connection to Postgree  use 
-npx prisma migrate dev --name init 
 DATABASE_URL in .env file with your url
-
+npx prisma migrate dev --name init 
 ```
     
 ## ENDS POIONTS 
