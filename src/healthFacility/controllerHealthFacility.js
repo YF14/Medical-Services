@@ -3,105 +3,101 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { User, role, SettingUser } = new PrismaClient();
+const { hf, role, settingHf } = new PrismaClient();
 
-const getAllUser = async (req, res) => {
+const getAllFacility = async (req, res) => {
   const size = parseInt(req.query.size);
   const page = parseInt(req.query.page);
-  const count = await User.count();
+  const count = await hf.count();
   let sizes = 2;
   let pages = 1;
   if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
   if (!Number.isNaN(page) && page > 0) pages = page;
   let nPage = Math.ceil(count / sizes);
   if (pages > nPage) pages = nPage;
-  const user = await User.findMany({
+  const facilities = await hf.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { SettingUser: true, role: true },
+    include: { settingHf: true, role: true },
   });
   console.log("SdSD", sizes, pages, nPage);
-  res.json(success(`current_page: ${pages}`, user, `TOTAL PAGES ${nPage}`));
+  res.json(success(`current_page: ${pages}`, facilities, `TOTAL PAGES ${nPage}`));
 };
-const getUser = async (req, res) => {
+const getFacility = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
   try {
-    const user = await User.findUnique({
+    const facilities = await hf.findUnique({
       where: { id: req.params.id },
-      include: { SettingUser: true, role: true },
+      include: { settingHf: true, role: true },
     });
-    if (!user) {
+    if (!facilities) {
       return res.status(404).json(error(404, "Not Found"));
     }
-    res.json(success("200", user, "sdas"));
+    res.json(success("200", facilities, "sdas"));
   } catch (e) {
     console.log("ewaweaw", e);
   }
 };
-const updateUser = async (req, res) => {
-  const { name, avatar, dob, gender, language, darkmode, bio,city,town } = req.body;
+const updateFacility = async (req, res) => {
+  const { name, avatar, dob, gender, language, darkmode, description,cost,city,town } = req.body;
 
   try {
-    const user = await User.update(
+    const facilities = await hf.update(
       {
         data: { name },
-        SettingUser: { avatar, dob, gender, bio, language, darkmode },
+        settingHf: { avatar, dob, gender, description, language, darkmode,cost },
         address:{city,town}
       },
       {
         where: { id: req.params.id },
       }
     );
-    if (user > 0) {
+    if (facilities > 0) {
       return res.status(404).json(error(404, "Not Found"));
     }
 
-    res.json(user);
+    res.json(facilities);
   } catch (err) {
     res.status(500).json(error(500, err));
   }
 };
-const deleteUser = async (req, res) => {
+const deleteFacility = async (req, res) => {
   try {
-    let user = await User.delete({
+    let fcility = await hf.delete({
       where: {
         id: req.params.id,
-      },
+      },    include: { settingHf: true, role: true },
+
     });
-    let SettingUser = await SettingUser.delete({
-      where: {
-        userId: req.params.id,
-      },
-    });
-    if (!user) {
+    if (!fcility) {
       return res.status(404).json(error(404, "Not Found"));
     }
-    res.json(success("201", user, "deleted"));
+    res.json(success("201", fcility, "deleted"));
   } catch (err) {
     res.status(500).json(error(500, err));
   }
 };
 
-const userChangePassword = async (req, res) => {
+const facilityChangePassword = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
   const { id, oldpass } = req.body;
-  const user = await User.findUnique({ where: { id: id } });
-  if (!user) {
+  const fcility = await hf.findUnique({ where: { id: id } });
+  if (!fcility) {
     return res.status(404).json(error(404, "Not Found"));
   }
   let ok = await bcrypt.compare(oldpass, user.password);
   if (ok) {
     const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
     try {
-      await User.update({ password: hashedPassword }, { where: { id: id } });
+      await hf.update({ password: hashedPassword }, { where: { id: id } });
 
-      res.json({ user });
+      res.json({ fcility });
     } catch (err) {
       res.status(500).json(error(500, err));
     }
@@ -109,9 +105,9 @@ const userChangePassword = async (req, res) => {
 };
 
 module.exports = {
-  getAllUser,
-  getUser,
-  updateUser,
-  deleteUser,
-  userChangePassword,
+    getAllFacility,
+    getFacility,
+  updateFacility,
+  deleteFacility,
+  facilityChangePassword,
 };

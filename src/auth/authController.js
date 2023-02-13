@@ -17,10 +17,10 @@ const signup =async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
 
-    const {email, name, roleName, avatar, bio, dob, gender,street,city} = req.body;
+    const {phoneNumber, name, roleName, avatar, bio, dob, gender,town,city} = req.body;
     const user = await User.create({
       data: {
-        email,
+        phoneNumber,
         name,
         password: hashedPassword,
         role: {
@@ -38,7 +38,7 @@ const signup =async (req, res) => {
         address:{
           create :{
             city,
-            street
+            town
           }
         }
       },

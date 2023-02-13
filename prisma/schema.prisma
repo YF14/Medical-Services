@@ -11,43 +11,112 @@ datasource db {
 }
 
 model User {
- id String @id @default(uuid()) @db.Uuid
-   email     String   @unique @db.VarChar(255)
-  name      String   @db.VarChar(255)
-  password  String   @db.VarChar(255)
-  role      Role     @relation(fields: [roleId], references: [id])
-  roleId    String   @db.Uuid   @unique 
-  setting   Setting  @relation(fields: [settingId], references: [id])
-  address   Address  @relation(fields: [addressId], references: [id])
-  addressId String   @db.Uuid   @unique 
-  settingId String   @db.Uuid   @unique 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String      @id @default(uuid()) @db.Uuid
+  phoneNumber String      @unique @db.VarChar(255)
+  name        String      @db.VarChar(255)
+  password    String      @db.VarChar(255)
+  role        Role        @relation(fields: [roleId], references: [id])
+  roleId      String      @unique @db.Uuid
+  setting     SettingUser @relation(fields: [settingId], references: [id])
+  address     Address     @relation(fields: [addressId], references: [id])
+  addressId   String      @unique @db.Uuid
+  settingId   String      @unique @db.Uuid
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  hf    HfonUser[]
 }
 
 model Address {
-   id String @id @default(uuid()) @db.Uuid
-  city   String
-  street String
-  user   User?
+  id   String @id @default(uuid()) @db.Uuid
+  city String
+  town String
+  user User?
+  hf   Hf?
 }
 
 model Role {
-  id String @id @default(uuid()) @db.Uuid
+  id       String   @id @default(uuid()) @db.Uuid
   name     String   @default("user") @db.VarChar(255)
   isVerify Boolean? @default(true)
 
   User User?
+  hf   Hf?
 }
 
-model Setting {
-   id String @id @default(uuid()) @db.Uuid
+model SettingUser {
+  id String @id @default(uuid()) @db.Uuid
 
-  avatar   String
-  language String   @default("ar") @db.VarChar(9)
-  darkmode Boolean  @default(false)
-  bio      String   @db.VarChar(255)
-  dob      DateTime
-  gender   String   @db.VarChar(9)
-  User User?
+  avatar      String
+  language    String                 @default("ar") @db.VarChar(9)
+  darkmode    Boolean                @default(false)
+  bio         String                 @db.VarChar(255)
+  dob         DateTime
+  gender      String                 @db.VarChar(9)
+  User        User?
+  specialties SpecialtiesOnSetting[]
+}
+
+model HfonUser {
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+  hf     Hf     @relation(fields: [hfId], references: [id])
+  hfId   String @db.Uuid
+
+  @@id([userId, hfId])
+}
+
+model Hf {
+  id          String     @id @default(uuid()) @db.Uuid
+  phoneNumber String     @unique @db.VarChar(255)
+  name        String     @db.VarChar(255)
+  password    String     @db.VarChar(255)
+  address     Address    @relation(fields: [addressId], references: [id])
+  addressId   String     @unique @db.Uuid
+  role        Role       @relation(fields: [roleId], references: [id])
+  roleId      String     @unique @db.Uuid
+  settingHf   SettingHf  @relation(fields: [settingHfId], references: [id])
+  settingHfId String     @unique @db.Uuid
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user    HfonUser[]
+}
+
+model SettingHf {
+  id            String                   @id @default(uuid()) @db.Uuid
+  rating        Float                    @default(0)
+  ratingCounter Int                      @default(0)
+  cost          Float                    @default(0)
+  avatar        String
+  openAt Float
+  closeAt Float
+  language      String                   @default("ar") @db.VarChar(9)
+  darkmode      Boolean                  @default(false)
+  description   String                   @db.Text
+  hf            Hf?
+  specialties   SpecialtiesOnSettingHf[]
+}
+
+model specialties {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(255)
+  SpecialtiesOnSettingHf SpecialtiesOnSettingHf[]
+  SpecialtiesOnSetting   SpecialtiesOnSetting[]
+}
+
+model SpecialtiesOnSettingHf {
+  SettingHf     SettingHf   @relation(fields: [settingHfId], references: [id])
+  settingHfId   String      @db.Uuid
+  specialties   specialties @relation(fields: [specialtiesId], references: [id])
+  specialtiesId Int
+
+  @@id([specialtiesId, settingHfId])
+}
+
+model SpecialtiesOnSetting {
+  Setting       SettingUser @relation(fields: [settingId], references: [id])
+  settingId     String      @db.Uuid
+  specialties   specialties @relation(fields: [specialtiesId], references: [id])
+  specialtiesId Int
+
+  @@id([specialtiesId, settingId])
 }
