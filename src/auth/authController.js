@@ -55,12 +55,12 @@ const signin = async (req, res) => {
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
-  let email = req.body.email;
-  console.log(email);
+  let phoneNumber = req.body.phoneNumber;
+  console.log(phoneNumber);
   try {
     let user = await User.findUnique({
       where: {
-        email
+        phoneNumber
       },
       include:{role: true},
     });

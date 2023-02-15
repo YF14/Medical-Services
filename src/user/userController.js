@@ -3,12 +3,17 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { User, role, SettingUser } = new PrismaClient();
+const { User, role, setting } = new PrismaClient();
 
 const getAllUser = async (req, res) => {
   const size = parseInt(req.query.size);
   const page = parseInt(req.query.page);
-  const count = await User.count();
+  try {
+    const count = await User.count();
+  
+  if(!count>0)
+  return res.status(404).json("empty");
+
   let sizes = 2;
   let pages = 1;
   if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
@@ -18,20 +23,23 @@ const getAllUser = async (req, res) => {
   const user = await User.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { SettingUser: true, role: true },
+    include: { setting: true, role: true,address:true },
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, user, `TOTAL PAGES ${nPage}`));
-};
+} catch (errorr) {console.log(errorr)
+  return res.status(500).json(error(500, errorr));
+
+}};
 const getUser = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
-  try {
+  try { 
     const user = await User.findUnique({
       where: { id: req.params.id },
-      include: { SettingUser: true, role: true },
+      include: { setting: true, role: true,address:true },
     });
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
@@ -43,18 +51,33 @@ const getUser = async (req, res) => {
 };
 const updateUser = async (req, res) => {
   const { name, avatar, dob, gender, language, darkmode, bio,city,town } = req.body;
-
+ 
   try {
-    const user = await User.update(
-      {
-        data: { name },
-        SettingUser: { avatar, dob, gender, bio, language, darkmode },
-        address:{city,town}
-      },
-      {
-        where: { id: req.params.id },
-      }
-    );
+    const user = await User.update({where:{id:req.params.id},
+    include: { setting: true, role: true, address: true } ,
+
+      data: {         
+            name,
+              setting: {
+              update: {
+                avatar,
+                bio,
+                dob: new Date(dob),
+                gender,
+                language,
+                darkmode,
+              },
+            },
+            address: {
+              update: {
+                city,
+                town,
+              },
+            },
+          },
+        
+      
+    });
     if (user > 0) {
       return res.status(404).json(error(404, "Not Found"));
     }
@@ -69,20 +92,18 @@ const deleteUser = async (req, res) => {
     let user = await User.delete({
       where: {
         id: req.params.id,
-      },
+      },      
+      include: { setting: true, role: true,address:true },
     });
-    let SettingUser = await SettingUser.delete({
-      where: {
-        userId: req.params.id,
-      },
-    });
+  // if(user.role.name=="dr")
+  // await dr.delete({where:{id:}})
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
     }
     res.json(success("201", user, "deleted"));
   } catch (err) {
     res.status(500).json(error(500, err));
-  }
+  } 
 };
 
 const userChangePassword = async (req, res) => {
