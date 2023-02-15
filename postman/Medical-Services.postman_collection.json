@@ -341,14 +341,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\":\"yousifadnanx1@gmail.com\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\"avatar\":\"jkljk\",\"bio\":\"hjkh\",\"dob\":\"2000-10-10\",\"gender\":\"male\"\r\n}",
+							"raw": "{\r\n    \"name\":\"y89sdady\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost:5000/auth/signup/"
+						"url": "http://localhost:5000/Specialties/addSpecialties/"
 					},
 					"response": []
 				},
@@ -356,7 +356,8 @@
 					"name": "get 1 Specialties by id",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": "http://localhost:5000/Specialties/1"
 					},
 					"response": []
 				},
@@ -378,7 +379,7 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost:5000/hf/"
+						"url": "http://localhost:5000/Specialties/"
 					},
 					"response": []
 				},
@@ -389,14 +390,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"asdasdwe\",\r\n\"town\":\"asda\",\r\n\"xp\":6,\r\n    \"phoneNumber\":\"9647700095180\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
+							"raw": "{\r\n    \"name\":\"y89wqesdady\"\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost:5000/hf/6432eeb2-b1bd-4719-a2aa-f4d395042c63"
+						"url": "http://localhost:5000/Specialties/1"
 					},
 					"response": []
 				},
@@ -405,7 +406,7 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://localhost:5000/hf/6432eeb2-b1bd-4719-a2aa-f4d395042c63"
+						"url": "http://localhost:5000/Specialties/1"
 					},
 					"response": []
 				}
