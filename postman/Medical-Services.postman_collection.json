@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phoneNumber\":\"2132123124\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"user\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\",\r\n     \"city\":\"baghdad\",\r\n     \"town\":\"sad\"\r\n}",
+							"raw": "{\r\n    \"phoneNumber\":\"21321323124\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"user\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\",\r\n     \"city\":\"baghdad\",\r\n     \"town\":\"sad\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -63,7 +63,7 @@
 								"type": "text"
 							}
 						],
-						"url": "{{url}}:5000/user/a16e3c42-ae0b-46a3-ab32-c90a76837eba"
+						"url": "{{url}}:5000/user/f670eea0-9cc4-40f9-9f6f-597cafb1c859"
 					},
 					"response": []
 				},
@@ -141,7 +141,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"phoneNumber\":\"962477345345433\",\r\n\"id\":\"a16e3c42-ae0b-46a3-ab32-c90a76837eba\",\r\n\"type\":\"hf\"}",
+							"raw": "{\"phoneNumber\":\"9624773453454333\",\r\n\"id\":\"f670eea0-9cc4-40f9-9f6f-597cafb1c859\",\r\n\"type\":\"hf\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -149,6 +149,24 @@
 							}
 						},
 						"url": "http://localhost:5000/user/addFavorite/"
+					},
+					"response": []
+				},
+				{
+					"name": "remove Favorite",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"phoneNumber\":\"9624773453454333\",\r\n\"id\":\"f670eea0-9cc4-40f9-9f6f-597cafb1c859\",\r\n\"type\":\"hf\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/user/removeFavorite"
 					},
 					"response": []
 				}

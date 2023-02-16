@@ -23,7 +23,7 @@ const getAllUser = async (req, res) => {
   const user = await User.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { setting: true, role: true,address:true,favoritedr:true },
+    include: { setting: true, role: true,address:true,favoritedr:true ,favoritehf:true},
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, user, `TOTAL PAGES ${nPage}`));
@@ -39,7 +39,7 @@ const getUser = async (req, res) => {
   try { 
     const user = await User.findUnique({
       where: { id: req.params.id },
-      include: { setting: true, role: true,address:true,favoritedr:true },
+      include: { setting: true, role: true,address:true,favoritedr:true ,favoritehf:true},
     });
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
@@ -93,7 +93,7 @@ const deleteUser = async (req, res) => {
       where: {
         id: req.params.id,
       },      
-      include: { setting: true, role: true,address:true },
+      include: { setting: true, role: true,address:true,favoritedr:true ,favoritehf:true},
     });
   // if(user.role.name=="dr")
   // await dr.delete({where:{id:}})
@@ -170,11 +170,55 @@ if(type=="dr"){
     res.status(500).json(error(500, err));
   }
 };
+const removeFavorite = async (req, res) => {
+  try {
+let phoneNumber=req.body.phoneNumber
+let type=req.body.type
+let drr
+let hff
+let id = req.body.id
+if(type=="dr"){
+    drr = await dr.findFirst({where:{user:{phoneNumber}}})
+    if(!drr)
+    return res.status(404).json(error(404, "Not Found"));
+     hff = await User.update({where:{id},  
+      data: {
+        favoritedr:{
+          disconnect: {id:drr.id}
+        }},
+       
+        
+    });
+  }
+   else if (type=="hf")
+   {    drr = await hf.findFirst({where:{user:{phoneNumber}}})  
+   if(!drr)
+   return res.status(404).json(error(404, "Not Found"));
+   hff = await User.update({where:{id},  
+    data: {
+      favoritehf:{
+        disconnect: {id:drr.id}}}
+  });
+  
+}
+
+  else     return res.status(404).json(error(404, "type Not Found"));
+
+   
+    if (!hff) {
+      return res.status(404).json(error(404, "Not Found"));
+    }
+    res.json(success("201", hff, "done"));
+  } catch (err) {console.log(err)
+    res.status(500).json(error(500, err));
+  }
+};
 module.exports = {
   getAllUser,
   getUser,
   updateUser,
   deleteUser,
   userChangePassword,
-  addFavorite
+  addFavorite,
+  removeFavorite
 };
