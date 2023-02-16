@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { hf, user, role, setting,address,dr } = new PrismaClient();
+const { hf, user, role, setting,address,dr,Specialties } = new PrismaClient();
 
 const signup = async (req, res) => {
   let errors = validationResult(req).array();
@@ -88,7 +88,7 @@ const getAllHf = async (req, res) => {
   const hff = await hf.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { dr:true,user: { include: { setting: true, role: true } } },
+    include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, hff, `TOTAL PAGES ${nPage}`));
@@ -104,7 +104,7 @@ const getHf = async (req, res) => {
   try {
     const hff = await hf.findUnique({
       where: { id: req.params.id },
-      include: { user: { include: { setting: true, role: true } } },
+      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
     });
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
@@ -135,7 +135,7 @@ const updateHf = async (req, res) => {
 
   try {
     const hff = await hf.update({where:{id:req.params.id},
-    include:{  user: { include: { setting: true, role: true, address: true } }},
+      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
 
       data: {
         description,
@@ -182,7 +182,7 @@ const deleteHf = async (req, res) => {
       where: {
         id: req.params.id,
       },
-      include: { user: { include: { setting: true, role: true } } },
+      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
     });
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
@@ -250,22 +250,22 @@ const addDr = async (req, res) => {
 };
 
 const addSpecialties = async (req, res) => {
-  try {let phoneNumber=req.body.phoneNumber
-   let drr = await dr.findFirst({where:{user:{phoneNumber}}})
- console.log(drr)
-    if(!drr)
+  try {let name=req.body.name
+
+   let spec = await Specialties.findMany({where:{name:{in: name}}})
+ console.log(spec)
+    if(!spec)
     return res.status(404).json(error(404, "Not Found"));
 
     let id = req.body.id
-    const hff = await hf.update({where:{id},
-      include:{  dr: { include: { user: true} }},
-  
+    const hff = await hf.update({where:{id},  
         data: {
-          dr:{
+          specialties:{
+           
+              connect:spec.map(c => ({ id: parseInt(c.id)})) || [], }
              
-             connect:{id:drr.id}
           
-          }}
+          }
       });
    
 
@@ -285,4 +285,5 @@ module.exports = {
   hfChangePassword,
   signup,
   addDr,
+  addSpecialties
 };

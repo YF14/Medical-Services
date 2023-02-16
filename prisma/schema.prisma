@@ -22,10 +22,12 @@ model User {
   addressId   String  @unique @db.Uuid
   settingId   String  @unique @db.Uuid
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  dr        Dr?
-  hf        Hf?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  dr         Dr?      @relation("dr")
+  hf         Hf?      @relation("hf")
+  favoritedr Dr[]     @relation("fav")
+  favoritehf Hf[]     @relation("favhf")
 }
 
 model Address {
@@ -56,45 +58,44 @@ model Setting {
 }
 
 model Dr {
-  id              String            @id @default(uuid()) @db.Uuid
-  user            User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String?           @unique @db.Uuid
-  cost            Float
-  openAt          Int
-  closeAt         Int
-  xp              Int               @default(0)
-  description     String?           @db.Text
-  specialtiesOnDr SpecialtiesOnDr[]
-  hf              Hf?               @relation(fields: [hfId], references: [id])
-  hfId            String?           @db.Uuid
+  id          String        @id @default(uuid()) @db.Uuid
+  user        User?         @relation("dr", fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?       @unique @db.Uuid
+  cost        Float
+  openAt      Int
+  closeAt     Int
+  xp          Int           @default(0)
+  description String?       @db.Text
+  specialties Specialties[]
+  favuser     User[]        @relation("fav")
+  hf          Hf?           @relation(fields: [hfId], references: [id])
+  hfId        String?       @db.Uuid
 }
 
 model Hf {
-  id                 String            @id @default(uuid()) @db.Uuid
-  user               User?             @relation(fields: [userId], references: [id])
-  userId             String?           @unique @db.Uuid
-  drNumbers          Int               @default(0)
+  id                 String        @id @default(uuid()) @db.Uuid
+  user               User?         @relation("hf", fields: [userId], references: [id])
+  userId             String?       @unique @db.Uuid
+  drNumbers          Int           @default(0)
   openAt             Int
   closeAt            Int
-  specialtiesNumbers Int               @default(0)
-  description        String?           @db.Text
-  specialtiesOnDr    SpecialtiesOnDr[]
+  specialtiesNumbers Int           @default(0)
+  description        String?       @db.Text
+  favUser            User[]        @relation("favhf")
+  specialties        Specialties[]
   dr                 Dr[]
 }
 
 model Specialties {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  specialtiesOnDr SpecialtiesOnDr[]
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+  hf   Hf[]
+  dr   Dr[]
 }
 
-model SpecialtiesOnDr {
-  dr            Dr          @relation(fields: [drId], references: [id])
-  drId          String      @db.Uuid
-  specialties   Specialties @relation(fields: [specialtiesId], references: [id])
-  specialtiesId Int
-  hf            Hf?         @relation(fields: [hfId], references: [id])
-  hfId          String?     @db.Uuid
-
-  @@id([specialtiesId, drId])
-}
+// model favorite {
+//   id   Int    @id @default(autoincrement())
+//   dr   Dr[]
+//   hf   Hf[]
+//   user User[]
+// }

@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { User, role, setting,Favorite,dr ,hf} = new PrismaClient();
+const { User, role, setting,Favorite } = new PrismaClient();
 
 const getAllUser = async (req, res) => {
   const size = parseInt(req.query.size);
@@ -23,7 +23,7 @@ const getAllUser = async (req, res) => {
   const user = await User.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { setting: true, role: true,address:true,favoritedr:true },
+    include: { setting: true, role: true,address:true },
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, user, `TOTAL PAGES ${nPage}`));
@@ -39,7 +39,7 @@ const getUser = async (req, res) => {
   try { 
     const user = await User.findUnique({
       where: { id: req.params.id },
-      include: { setting: true, role: true,address:true,favoritedr:true },
+      include: { setting: true, role: true,address:true },
     });
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
@@ -106,62 +106,27 @@ const deleteUser = async (req, res) => {
   } 
 };
 
-const userChangePassword = async (req, res) => {
-  let errors = validationResult(req).array();
-  if (errors && errors.length > 0) {
-    return res.status(400).json(error(400, errors));
-  }
-  const { id, oldpass } = req.body;
-  const user = await User.findUnique({ where: { id: id } });
-  if (!user) {
-    return res.status(404).json(error(404, "Not Found"));
-  }
-  let ok = await bcrypt.compare(oldpass, user.password);
-  if (ok) {
-    const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
-    try {
-      await User.update({ password: hashedPassword }, { where: { id: id } });
 
-      res.json({ user });
-    } catch (err) {
-      res.status(500).json(error(500, err));
-    }
-  } else res.status(500).json(error(500, "wrong password"));
-};
 const addFavorite = async (req, res) => {
-  try {let phoneNumber=req.body.phoneNumber
-let type=req.body.type
-let drr
-let hff
-let id = req.body.id
-if(type=="dr"){
-    drr = await dr.findFirst({where:{user:{phoneNumber}}})
-    if(!drr)
+  try {let type=req.body.type
+
+   let spec = await Specialties.findMany({where:{name:{in: name}}})
+ console.log(spec)
+    if(!spec)
     return res.status(404).json(error(404, "Not Found"));
-     hff = await User.update({where:{id},  
-      data: {
-        favoritedr:{
-            connect: {id:drr.id}
-        }},
-       
-        
-    });
-  }
-   else if (type=="hf")
-   {    drr = await hf.findFirst({where:{user:{phoneNumber}}})  
-   if(!drr)
-   return res.status(404).json(error(404, "Not Found"));
-   hff = await User.update({where:{id},  
-    data: {
-      favoritehf:{
-        connect: {id:drr.id}}}
-  });
-  
-}
 
-  else     return res.status(404).json(error(404, "type Not Found"));
-
+    let id = req.body.id
+    const hff = await hf.update({where:{id},  
+        data: {
+          specialties:{
+           
+              connect:spec.map(c => ({ id: parseInt(c.id)})) || [], }
+             
+          
+          }
+      });
    
+
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
     }
@@ -176,5 +141,4 @@ module.exports = {
   updateUser,
   deleteUser,
   userChangePassword,
-  addFavorite
 };

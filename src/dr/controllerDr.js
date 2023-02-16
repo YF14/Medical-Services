@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { dr, user, role, setting, address } = new PrismaClient();
+const { dr, user, role, setting, address,Specialties } = new PrismaClient();
 
 const signup = async (req, res) => {
   let errors = validationResult(req).array();
@@ -88,7 +88,7 @@ const getAllDr = async (req, res) => {
   const drr = await dr.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { user: { include: { setting: true, role: true } } },
+    include: { user: { include: { setting: true, role: true } },specialties:true },
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
@@ -104,7 +104,7 @@ const getDr = async (req, res) => {
   try {
     const drr = await dr.findUnique({
       where: { id: req.params.id },
-      include: { user: { include: { setting: true, role: true } } },
+      include: { user: { include: { setting: true, role: true } },specialties:true },
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
@@ -135,7 +135,7 @@ const updateDr = async (req, res) => {
 
   try {
     const drr = await dr.update({where:{id:req.params.id},
-    include:{  user: { include: { setting: true, role: true, address: true } }},
+      include: { user: { include: { setting: true, role: true } },specialties:true },
 
       data: {
         description,
@@ -182,7 +182,7 @@ const deleteDr = async (req, res) => {
       where: {
         id: req.params.id,
       },
-      include: { user: { include: { setting: true, role: true } } },
+      include: { user: { include: { setting: true, role: true } },specialties:true },
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
@@ -219,7 +219,34 @@ const drChangePassword = async (req, res) => {
     }
   } else res.status(500).json(error(500, "wrong password"));
 };
+const addSpecialties = async (req, res) => {
+  try {let name=req.body.name
 
+   let spec = await Specialties.findMany({where:{name:{in: name}}})
+ console.log(spec)
+    if(!spec)
+    return res.status(404).json(error(404, "Not Found"));
+
+    let id = req.body.id
+    const hff = await dr.update({where:{id},  
+        data: {
+          specialties:{
+           
+              connect:spec.map(c => ({ id: parseInt(c.id)}))}
+             
+          
+          }
+      });
+   
+
+    if (!hff) {
+      return res.status(404).json(error(404, "Not Found"));
+    }
+    res.json(success("201", hff, "done"));
+  } catch (err) {console.log(err)
+    res.status(500).json(error(500, err));
+  }
+};
 module.exports = {
   getAllDr,
   getDr,
@@ -227,4 +254,5 @@ module.exports = {
   deleteDr,
   drChangePassword,
   signup,
+  addSpecialties
 };

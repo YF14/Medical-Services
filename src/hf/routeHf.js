@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getAllHf,getHf,deleteHf,updateHf,hfChangePassword,signup,addDr} = require('./controllerHf')
+const {getAllHf,getHf,deleteHf,updateHf,hfChangePassword,signup,addDr,addSpecialties} = require('./controllerHf')
 const {verifyToken,checkUserDuplicate}=require('../auth/verifyToken')
 const {check, body,param} = require('express-validator')
 
@@ -12,6 +12,8 @@ router.post('/signup',check('phoneNumber').not().isEmpty().isLength({min:6,max:5
 router.get('/',getAllHf )
 router.get('/:id',getHf )
 router.post('/addDr',check('phoneNumber').not().isEmpty().isLength({min:6,max:50}).withMessage('phone number is required'),addDr)
+router.post('/addSpecialties',check('name').not().isEmpty().withMessage('name is required'),addSpecialties)
+
 
 // ,verifyToken
 // ,verifyToken
