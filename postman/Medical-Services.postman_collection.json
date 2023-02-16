@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phoneNumber\":\"213213124\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"user\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\",\r\n     \"city\":\"baghdad\",\r\n     \"town\":\"sad\"\r\n}",
+							"raw": "{\r\n    \"phoneNumber\":\"2132123124\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"user\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\",\r\n     \"city\":\"baghdad\",\r\n     \"town\":\"sad\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -63,7 +63,7 @@
 								"type": "text"
 							}
 						],
-						"url": "{{url}}:5000/user/1e6929ac-84ea-443e-9ecd-6511f3d46f27"
+						"url": "{{url}}:5000/user/a16e3c42-ae0b-46a3-ab32-c90a76837eba"
 					},
 					"response": []
 				},
@@ -133,6 +133,24 @@
 						"url": "http://localhost:5000/user/d2359a54-9c72-4828-9071-218a1ca2b4ac"
 					},
 					"response": []
+				},
+				{
+					"name": "add Favorite",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"phoneNumber\":\"962477345345433\",\r\n\"id\":\"a16e3c42-ae0b-46a3-ab32-c90a76837eba\",\r\n\"type\":\"hf\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/user/addFavorite/"
+					},
+					"response": []
 				}
 			]
 		},
@@ -146,7 +164,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"baghdad\",\r\n\"town\":\"asda\",\r\n\"xp\":6,\r\n    \"phoneNumber\":\"96477345354543323\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
+							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"baghdad\",\r\n\"town\":\"asda\",\r\n\"xp\":6,\r\n    \"phoneNumber\":\"9647734535454332323\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -162,7 +180,25 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:5000/dr/2bde0ab9-03c3-4db8-a6ca-96560cbfce74"
+						"url": {
+							"raw": "http://localhost:5000/dr/37d846b2-ab6b-43be-b16e-78666b279a40",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"dr",
+								"37d846b2-ab6b-43be-b16e-78666b279a40"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -227,7 +263,25 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"url": "http://localhost:5000/dr/0b95da65-3104-4bd7-a43f-5f09144ef034"
+						"url": "http://localhost:5000/dr/44e05e86-415f-46fe-a0a1-52899cff2ac3"
+					},
+					"response": []
+				},
+				{
+					"name": "add Specialties to Dr",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":[\"y89sdadyweqy\",\"aaa\"],\r\n\"id\":\"53520a0d-4b5f-4d40-91dd-b4db47ea205d\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/dr/addSpecialties"
 					},
 					"response": []
 				}
@@ -243,7 +297,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"specialtiesNumbers\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"baghdad\",\r\n\"town\":\"asda\",\r\n\"drNumbers\":6,\r\n    \"phoneNumber\":\"96247743453454333\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
+							"raw": "{\"specialtiesNumbers\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"baghdad\",\r\n\"town\":\"asda\",\r\n\"drNumbers\":6,\r\n    \"phoneNumber\":\"962477434534254333\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -258,7 +312,8 @@
 					"name": "get 1 hf by id",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": "http://localhost:5000/hf/d889159e-9737-4692-b934-3c5dc0ee0535"
 					},
 					"response": []
 				},
@@ -328,6 +383,24 @@
 						"url": "http://localhost:5000/hf/adddr"
 					},
 					"response": []
+				},
+				{
+					"name": "add Specialties to hf",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":[\"aaa\",\"y89sdady\",\"asdas\"],\r\n\"id\":\"d889159e-9737-4692-b934-3c5dc0ee0535\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/hf/addSpecialties"
+					},
+					"response": []
 				}
 			]
 		},
@@ -341,7 +414,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"y89sdady\"\r\n}",
+							"raw": "{\r\n    \"name\":\"aaa\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -379,7 +452,24 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost:5000/Specialties/"
+						"url": {
+							"raw": "http://localhost:5000/Specialties/?size=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"Specialties",
+								""
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
 					},
 					"response": []
 				},
