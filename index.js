@@ -8,7 +8,7 @@ const authRoute=require('./src/auth/authRoute')
 const userRoute=require('./src/user/userRoute')
 const drRoute =require ('./src/dr/routeDr')
 const hfRoute =require ('./src/hf/routeHf')
-const SpecialtiesRoute =require ('./src/Specialties/routeSpecialties')
+const SpecialtiesRoute =require ('./src/specialties/routeSpecialties')
 
 app.use(express.json())
 app.use(cors())
