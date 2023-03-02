@@ -14,10 +14,7 @@ const addSpecialties = async (req, res) => {
   try {
    
 
-    const {
-      
-      name
-    } = req.body;
+    const {name} = req.body;
     const spec = await Specialties.create({
       data: {
       name}
