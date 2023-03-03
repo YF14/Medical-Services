@@ -9,7 +9,7 @@ const userRoute=require('./src/user/userRoute')
 const drRoute =require ('./src/dr/routeDr')
 const hfRoute =require ('./src/hf/routeHf')
 const SpecialtiesRoute =require ('./src/specialties/routeSpecialties')
-
+const bookingRoute=require('./src/booking/routeBooking')
 app.use(express.json())
 app.use(cors())
 app.get('/', (req, res)=>{
@@ -22,4 +22,6 @@ app.use("/user",userRoute )
 app.use("/dr",drRoute)
 app.use("/hf",hfRoute)
 app.use("/Specialties",SpecialtiesRoute)
+app.use("/booking",bookingRoute)
+
 app.listen(APP_PORT)    

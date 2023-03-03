@@ -1,43 +1,48 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "id" UUID NOT NULL,
+    "phoneNumber" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "roleId" UUID NOT NULL,
+    "addressId" UUID NOT NULL,
+    "settingId" UUID NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-  - You are about to drop the column `drId` on the `User` table. All the data in the column will be lost.
-  - You are about to drop the `SpecialtiesOnDr` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `dr` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `specialties` table. If the table is not empty, all the data it contains will be lost.
-  - Made the column `isVerify` on table `Role` required. This step will fail if there are existing NULL values in that column.
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "SpecialtiesOnDr" DROP CONSTRAINT "SpecialtiesOnDr_drId_fkey";
+-- CreateTable
+CREATE TABLE "Address" (
+    "id" UUID NOT NULL,
+    "city" TEXT NOT NULL,
+    "town" TEXT NOT NULL,
 
--- DropForeignKey
-ALTER TABLE "SpecialtiesOnDr" DROP CONSTRAINT "SpecialtiesOnDr_specialtiesId_fkey";
+    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
+);
 
--- DropForeignKey
-ALTER TABLE "User" DROP CONSTRAINT "User_drId_fkey";
+-- CreateTable
+CREATE TABLE "Role" (
+    "id" UUID NOT NULL,
+    "name" VARCHAR(255) NOT NULL DEFAULT 'user',
+    "isVerify" BOOLEAN NOT NULL DEFAULT true,
 
--- DropIndex
-DROP INDEX "User_drId_key";
+    CONSTRAINT "Role_pkey" PRIMARY KEY ("id")
+);
 
--- AlterTable
-ALTER TABLE "Role" ALTER COLUMN "isVerify" SET NOT NULL;
+-- CreateTable
+CREATE TABLE "Setting" (
+    "id" UUID NOT NULL,
+    "avatar" TEXT,
+    "language" VARCHAR(9) NOT NULL DEFAULT 'ar',
+    "darkmode" BOOLEAN NOT NULL DEFAULT false,
+    "bio" VARCHAR(255),
+    "dob" TIMESTAMP(3) NOT NULL,
+    "gender" VARCHAR(9) NOT NULL,
 
--- AlterTable
-ALTER TABLE "Setting" ALTER COLUMN "avatar" DROP NOT NULL,
-ALTER COLUMN "bio" DROP NOT NULL;
-
--- AlterTable
-ALTER TABLE "User" DROP COLUMN "drId";
-
--- DropTable
-DROP TABLE "SpecialtiesOnDr";
-
--- DropTable
-DROP TABLE "dr";
-
--- DropTable
-DROP TABLE "specialties";
+    CONSTRAINT "Setting_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Dr" (
@@ -75,6 +80,30 @@ CREATE TABLE "Specialties" (
 );
 
 -- CreateTable
+CREATE TABLE "BookingAv" (
+    "id" UUID NOT NULL,
+    "drId" UUID,
+    "date" TEXT NOT NULL,
+    "time" TEXT NOT NULL,
+    "av" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "BookingAv_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Booking" (
+    "id" UUID NOT NULL,
+    "userId" UUID,
+    "drId" UUID,
+    "phoneNumber" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "date" TEXT NOT NULL,
+    "time" TEXT NOT NULL,
+
+    CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_DrToSpecialties" (
     "A" UUID NOT NULL,
     "B" INTEGER NOT NULL
@@ -99,10 +128,31 @@ CREATE TABLE "_HfToSpecialties" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_phoneNumber_key" ON "User"("phoneNumber");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_roleId_key" ON "User"("roleId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_addressId_key" ON "User"("addressId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_settingId_key" ON "User"("settingId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Dr_userId_key" ON "Dr"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Hf_userId_key" ON "Hf"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BookingAv_drId_key" ON "BookingAv"("drId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Booking_userId_key" ON "Booking"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Booking_drId_key" ON "Booking"("drId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_DrToSpecialties_AB_unique" ON "_DrToSpecialties"("A", "B");
@@ -129,6 +179,15 @@ CREATE UNIQUE INDEX "_HfToSpecialties_AB_unique" ON "_HfToSpecialties"("A", "B")
 CREATE INDEX "_HfToSpecialties_B_index" ON "_HfToSpecialties"("B");
 
 -- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_settingId_fkey" FOREIGN KEY ("settingId") REFERENCES "Setting"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Dr" ADD CONSTRAINT "Dr_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -136,6 +195,15 @@ ALTER TABLE "Dr" ADD CONSTRAINT "Dr_hfId_fkey" FOREIGN KEY ("hfId") REFERENCES "
 
 -- AddForeignKey
 ALTER TABLE "Hf" ADD CONSTRAINT "Hf_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BookingAv" ADD CONSTRAINT "BookingAv_drId_fkey" FOREIGN KEY ("drId") REFERENCES "Dr"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_drId_fkey" FOREIGN KEY ("drId") REFERENCES "Dr"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_DrToSpecialties" ADD CONSTRAINT "_DrToSpecialties_A_fkey" FOREIGN KEY ("A") REFERENCES "Dr"("id") ON DELETE CASCADE ON UPDATE CASCADE;

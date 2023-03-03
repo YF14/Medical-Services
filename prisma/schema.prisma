@@ -11,22 +11,23 @@ datasource db {
 }
 
 model User {
-  id          String  @id @default(uuid()) @db.Uuid
-  phoneNumber String  @unique @db.VarChar(255)
-  name        String  @db.VarChar(255)
-  password    String  @db.VarChar(255)
-  role        Role    @relation(fields: [roleId], references: [id])
-  roleId      String  @unique @db.Uuid
-  setting     Setting @relation(fields: [settingId], references: [id])
-  address     Address @relation(fields: [addressId], references: [id])
-  addressId   String  @unique @db.Uuid
-  settingId   String  @unique @db.Uuid
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  dr         Dr?      @relation("dr")
-  hf         Hf?      @relation("hf")
-  favoritedr Dr[]     @relation("fav")
-  favoritehf Hf[]     @relation("favhf")
+  id          String    @id @default(uuid()) @db.Uuid
+  phoneNumber String    @unique @db.VarChar(255)
+  name        String    @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  role        Role      @relation(fields: [roleId], references: [id])
+  roleId      String    @unique @db.Uuid
+  setting     Setting   @relation(fields: [settingId], references: [id])
+  address     Address   @relation(fields: [addressId], references: [id])
+  addressId   String    @unique @db.Uuid
+  settingId   String    @unique @db.Uuid
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  dr          Dr?       @relation("dr")
+  hf          Hf?       @relation("hf")
+  favoritedr  Dr[]      @relation("fav")
+  favoritehf  Hf[]      @relation("favhf")
+  booking     Booking[] @relation("booking")
 }
 
 model Address {
@@ -69,6 +70,10 @@ model Dr {
   favuser     User[]        @relation("fav")
   hf          Hf?           @relation(fields: [hfId], references: [id])
   hfId        String?       @db.Uuid
+  booking     Booking[]     @relation("booking")
+
+  bookingAv   BookingAv? @relation(fields: [bookingAvId], references: [id])
+  bookingAvId String?       @db.Uuid
 }
 
 model Hf {
@@ -92,3 +97,22 @@ model Specialties {
   dr   Dr[]
 }
 
+model BookingAv {
+  id   String   @id @default(uuid()) @db.Uuid
+  dr   Dr[]
+  date DateTime
+  time String[]
+  av   Boolean  @default(true)
+}
+
+model Booking {
+  id          String   @id @default(uuid()) @db.Uuid
+  user        User?    @relation("booking", fields: [userId], references: [id])
+  userId      String?  @unique @db.Uuid
+  dr          Dr?      @relation("booking", fields: [drId], references: [id])
+  drId        String?  @unique @db.Uuid
+  phoneNumber Int
+  name        String
+  date        DateTime
+  time        String
+}
