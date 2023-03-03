@@ -12,6 +12,9 @@ const SpecialtiesRoute =require ('./src/specialties/routeSpecialties')
 
 app.use(express.json())
 app.use(cors())
+app.get('/', (req, res)=>{
+    res.send('<h1>This is Clinic Restful API</h1>')
+});
 
 // call routers
 app.use("/auth",authRoute )
