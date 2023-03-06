@@ -1,22 +1,25 @@
 const express = require('express')
 const router = express.Router()
 const {
-    addbookingAv} = require('./controllerBooking')
-    // getAllBooking,
-    // getBooking,
-    // updateBooking,
-    // deleteBooking,
-    // addBooking,
+    updateBooking, deleteBookingAv,getBookingAv, addbookingAv,getAllBookingAv,addBooking,getAllBooking,getBooking} = require('./controllerBooking')
+     
+    
+    
+     
+    
 const {verifyToken,checkUserDuplicate}=require('../auth/verifyToken')
 const {check, body,param} = require('express-validator')
 
-// router.put('/:id',updateBooking)
-// router.delete('/:id',deleteBooking)
-// router.get('/',getAllBooking )
-// router.get('/:id',getBooking )
-router.post('/addbookingAv',addbookingAv)
-// router.post('/addbooking',addBooking)
 
+
+router.post('/addbookingAv',addbookingAv)
+ router.post('/addbooking',addBooking)
+ router.get('/booked',getAllBooking )
+ router.get('/',getAllBookingAv )
+ router.put('/:id',updateBooking)
+ router.delete('/:id',deleteBookingAv)
+ router.get('/:id',getBookingAv )
+  router.get('/booked/:id',getBooking )
 // ,verifyToken
 // ,verifyToken
 // ,verifyToken

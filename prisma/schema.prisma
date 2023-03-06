@@ -27,7 +27,9 @@ model User {
   hf          Hf?       @relation("hf")
   favoritedr  Dr[]      @relation("fav")
   favoritehf  Hf[]      @relation("favhf")
-  booking     Booking[] @relation("booking")
+  booking     Booking[]
+  otp         Otp?      @relation(fields: [otpId], references: [id])
+  otpId       Int?
 }
 
 model Address {
@@ -70,10 +72,9 @@ model Dr {
   favuser     User[]        @relation("fav")
   hf          Hf?           @relation(fields: [hfId], references: [id])
   hfId        String?       @db.Uuid
-  booking     Booking[]     @relation("booking")
+  booking     Booking[]
 
-  bookingAv   BookingAv? @relation(fields: [bookingAvId], references: [id])
-  bookingAvId String?       @db.Uuid
+  bookingAv BookingAv[]
 }
 
 model Hf {
@@ -100,19 +101,30 @@ model Specialties {
 model BookingAv {
   id   String   @id @default(uuid()) @db.Uuid
   dr   Dr[]
-  date DateTime
-  time String[]
-  av   Boolean  @default(true)
+  date DateTime @db.Date
+  time TimeAv[]
+}
+
+model TimeAv {
+  id        String      @id @default(uuid()) @db.Uuid
+  av        Boolean     @default(true)
+  time      String
+  BookingAv BookingAv[]
 }
 
 model Booking {
-  id          String   @id @default(uuid()) @db.Uuid
-  user        User?    @relation("booking", fields: [userId], references: [id])
-  userId      String?  @unique @db.Uuid
-  dr          Dr?      @relation("booking", fields: [drId], references: [id])
-  drId        String?  @unique @db.Uuid
+  id          String @id @default(uuid()) @db.Uuid
+  user        User[]
+  dr          Dr[]
   phoneNumber Int
   name        String
-  date        DateTime
   time        String
+}
+
+model Otp {
+  id      Int      @id @default(autoincrement())
+  otp     Int
+  exp     DateTime
+  timeOut DateTime
+  User    User[]
 }

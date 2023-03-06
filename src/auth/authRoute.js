@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { signup, signin } = require("./authController");
+const { signup, signin,getOtp } = require("./authController");
 const { checkUserDuplicate } = require("./verifySignup");
 const { check, body } = require("express-validator");
 router.post(
@@ -25,5 +25,8 @@ router.post(
   body("password").not().isEmpty().isLength({ min: 6, max: 23 }),
   signin
 );
-
+router.post(
+  "/otp",
+  getOtp
+);
 module.exports = router;
