@@ -146,9 +146,9 @@ let otp;
     timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
     
   }});
-  // client.messages
-  //   .create({body:OTP, from: '+1 567 313 1123', to: phoneNumber})
-  //   .then(message => console.log(message.sid));
+  client.messages
+    .create({body:OTP, from: '+1 567 313 1123', to: phoneNumber})
+    .then(message => console.log(message.sid));
     return res.status(200).json(success(200,otp, "done"));
 
   }
@@ -166,9 +166,9 @@ let otp;
        timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
        
      }});}
-    //  client.messages
-    // .create({body:OTP, from: '+1 567 313 1123', to: phoneNumber})
-    // .then(message => console.log(message.sid));
+     client.messages
+    .create({body:OTP, from: '+1 567 313 1123', to: phoneNumber})
+    .then(message => console.log(message.sid));
    return res.status(200).json(success(200,otp, "done"));
     
    
