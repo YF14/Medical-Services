@@ -1,6 +1,6 @@
 let jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
 const { dr, user, role, setting, address,Specialties } = new PrismaClient();
@@ -197,32 +197,7 @@ const deleteDr = async (req, res) => {
   }
 };
 
-const drChangePassword = async (req, res) => {
-  let errors = validationResult(req).array();
-  if (errors && errors.length > 0) {
-    return res.status(400).json(error(400, errors));
-  }
-  const { id, oldpass } = req.body;
-  const drr = await dr.findUnique({ where: { id: id } });
-  if (!drr) {
-    return res.status(404).json(error(404, "Not Found"));
-  }
-  let ok = await bcrypt.compare(oldpass, user.password);
-  if (ok) {
-    const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
-    try {
-      await dr.update({
-        data: {
-          user: { update: { password: hashedPassword } },
-        },
-      });
 
-      res.json({ drr });
-    } catch (err) {
-      res.status(500).json(error(500, err));
-    }
-  } else res.status(500).json(error(500, "wrong password"));
-};
 const addSpecialties = async (req, res) => {
   try {let name=req.body.name
 
@@ -256,7 +231,6 @@ module.exports = {
   getDr,
   updateDr,
   deleteDr,
-  drChangePassword,
   signup,
   addSpecialties
 };

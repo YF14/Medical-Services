@@ -1,4 +1,4 @@
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 const { PrismaClient } = require('@prisma/client')
 const {User} = new PrismaClient()
 

@@ -2,7 +2,7 @@ let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
 const { PrismaClient } = require("@prisma/client");
 const { validationResult } = require("express-validator");
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 require("dotenv").config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const REFREASHJWT_SECRET_KEY = process.env.REFREASHJWT_SECRET_KEY;
@@ -29,7 +29,7 @@ const signup =async (req, res) => {
         name,
         password: hashedPassword,
         role: {
-          create: { name: roleName, isVerify: true },
+          create: { name: roleName },
         },
         setting: {
           create: {
@@ -74,15 +74,16 @@ const signin = async (req, res) => {
       return res.status(404).json(error(404, "Not Found"));
     }
     let rol = user.role;
-    if (rol.name === "admin" && !rol.isActive) {
+    if (rol.name === "superadmin" && !rol.isActive) {
       return res.status(404).json(error(400, "your status is disable"));
     }
     let ok = await bcrypt.compare(req.body.password, user.password);
     if (!ok) return res.status(401).json(error(401, "Invalid Password"));
     let token = jwt.sign(
-      {
+      { roleName:user.role.name,
         displayName: user.name,
         id: user.id,
+        isVerify:user.role.isVerify,
         accessToken: "",
         renewalToken: "",
         token_type: "bearer",
@@ -93,9 +94,10 @@ const signin = async (req, res) => {
       }
     );
     let refreshToken = jwt.sign(
-      {
+      { roleName:user.role.name,
         displayName: user.name,
         id: user.id,
+        isVerify:user.role.isVerify,
         accessToken: "",
         renewalToken: "",
         token_type: "bearer",
@@ -111,6 +113,7 @@ const signin = async (req, res) => {
         200,
         {
         id:user.id,
+          roleName:user.role.name,
           displayName: user.name,
           accessToken: token,
           renewalToken: refreshToken,
@@ -218,6 +221,45 @@ console.log(userr)
     return res.status(500).json(error(500, "Server Side Error"));
   }
 };
+const forgetPassword = async (req, res) => {
+  let errors = validationResult(req).array();
+  
+  if (errors && errors.length > 0) {
+    return res.status(400).json(error(400, errors));
+  }
+  const { id,OTP} = req.body;
+  var now = new Date()
+  var userTimezoneOffset = now.getTimezoneOffset() * 60000;
+  now=new Date(now.getTime() - userTimezoneOffset);
+  let user = await User.findUnique({
+      where: { id: id },
+      include: { role: true ,otp:true},
+    })
+  
+  if (!user) {
+    return res.status(404).json(error(404, "Not Found"));
+  }
+  if (user.role.name == "superadmin")
+    return res.status(404).json(error(404, "you dont have permission"));
+    if (!user.otp||user.otp.exp.getTime() < now.getTime())
+      return res
+        .status(400)
+        .json(error(400, "your otp is expired or didn't exist ,make new one ")); 
+  console.log(user.otp.otp==OTP)
+  if (user.otp.otp==OTP) {
+    const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
+    try {
+      user = await User.update({
+        data: { password: hashedPassword },
+        where: { id: id },
+      });
 
-module.exports = { signup, signin,getOtp,verifyOTP };
+      res.json({ user });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(error(500, err));
+    }
+  } else res.status(500).json(error(500, "wrong password"));
+};
+module.exports = { signup, signin,getOtp,verifyOTP ,forgetPassword};
 

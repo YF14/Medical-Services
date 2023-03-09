@@ -1,6 +1,6 @@
 let jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
 const { Booking,BookingAv,time } = new PrismaClient();

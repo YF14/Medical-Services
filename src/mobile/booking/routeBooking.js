@@ -12,14 +12,11 @@ const {check, body,param} = require('express-validator')
 
 
 
-router.post('/addbookingAv',addbookingAv)
- router.post('/addbooking',addBooking)
- router.get('/booked',getAllBooking )
- router.get('/',getAllBookingAv )
- router.put('/:id',updateBooking)
- router.delete('/:id',deleteBookingAv)
- router.get('/:id',getBookingAv )
-  router.get('/booked/:id',getBooking )
+ router.post('/addbooking',verifyToken(["hf","dr","user","superadmin"]),addBooking)
+ router.get('/',verifyToken(["superadmin"]),getAllBookingAv )
+ router.put('/:id',verifyToken(["hf","dr","superadmin"]),updateBooking)
+ router.get('/:id',verifyToken(["hf","dr","user","superadmin"]),getBookingAv )
+ router.get('/booked/:id',verifyToken(["hf","dr","user","superadmin"]),getBooking )
 // ,verifyToken
 // ,verifyToken
 // ,verifyToken

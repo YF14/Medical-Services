@@ -43,7 +43,7 @@ model Role {
   id       String  @id @default(uuid()) @db.Uuid
   name     String  @default("user") @db.VarChar(255)
   isVerify Boolean @default(false)
-
+  isActive Boolean @default(true)
   user User?
 }
 

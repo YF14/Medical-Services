@@ -1,6 +1,6 @@
 let jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
 const { Specialties } = new PrismaClient();
@@ -52,6 +52,7 @@ const getAllSpecialties = async (req, res) => {
   return res.status(500).json(error(500, errorr));
 
 }};
+
 const getSpecialties = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {

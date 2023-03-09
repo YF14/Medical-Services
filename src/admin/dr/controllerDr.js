@@ -1,9 +1,9 @@
 let jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { hf, user, role, setting,address,dr,Specialties } = new PrismaClient();
+const { dr, user, role, setting, address,Specialties } = new PrismaClient();
 
 const signup = async (req, res) => {
   let errors = validationResult(req).array();
@@ -25,18 +25,20 @@ const signup = async (req, res) => {
       town,
       city,
       description,
-      drNumbers,
+      cost,
       openAt,
       closeAt,
-      specialtiesNumbers,
+      xp,
+      magerSpecialties
     } = req.body;
-    const hff = await hf.create({
+    const drr = await dr.create({
       data: {
         description,
         closeAt,
         openAt,
-        drNumbers,
-        specialtiesNumbers,
+        cost,
+        xp,
+        magerSpecialties,
         user: {
           create: {
             phoneNumber,
@@ -49,7 +51,7 @@ const signup = async (req, res) => {
             setting: {
               create: {
                 avatar,
-                bio, 
+                bio,
                 dob: new Date(dob),
                 gender,
               },
@@ -64,17 +66,17 @@ const signup = async (req, res) => {
         },
       },
     });
-    res.json(success(201, hff, "new user "));
+    res.json(success(201, drr, "new user "));
   } catch (err) {
     console.log(err);
     res.status(500).json(error(500, err));
   }
 };
-const getAllHf = async (req, res) => {
+const getAllDr = async (req, res) => {
   const size = parseInt(req.query.size);
   const page = parseInt(req.query.page);
   try {
-    const count = await hf.count();
+    const count = await dr.count();
   
   if(!count>0)
   return res.status(404).json("empty");
@@ -85,37 +87,63 @@ const getAllHf = async (req, res) => {
   if (!Number.isNaN(page) && page > 0) pages = page;
   let nPage = Math.ceil(count / sizes);
   if (pages > nPage) pages = nPage;
-  const hff = await hf.findMany({
+  const drr = await dr.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+    include: { user: { include: { setting: true, role: true } },specialties:true },
   });
   console.log("SdSD", sizes, pages, nPage);
-  res.json(success(`current_page: ${pages}`, hff, `TOTAL PAGES ${nPage}`));
+  res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
 } catch (errorr) {console.log(errorr)
   return res.status(500).json(error(500, errorr));
 
 }};
-const getHf = async (req, res) => {
+const getAllDrSameSpec = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await dr.count();
+  const {name}=req.body
+  if(!count>0)
+  return res.status(404).json("empty");
+
+  let sizes = 2;
+  let pages = 1;
+  if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+  if (!Number.isNaN(page) && page > 0) pages = page;
+  let nPage = Math.ceil(count / sizes);
+  if (pages > nPage) pages = nPage;
+  const drr = await Specialties.findMany({where:{name},
+    skip: (pages - 1) * sizes,
+    take: sizes,
+    include: { dr:true },
+  });
+  console.log("SdSD", sizes, pages, nPage);
+  res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+} catch (errorr) {console.log(errorr)
+  return res.status(500).json(error(500, errorr));
+
+}};
+const getDr = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
   try {
-    const hff = await hf.findUnique({
+    const drr = await dr.findUnique({
       where: { id: req.params.id },
-      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+      include: { user: { include: { setting: true, role: true } },specialties:true },
     });
-    if (!hff) {
+    if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     }
-    res.json(success("200", hff, "sdas"));
+    res.json(success("200", drr, "sdas"));
   } catch (err) {
     console.log("ewaweaw", err);
     return res.status(500).json(error(500, "server side error"));
   }
 };
-const updateHf = async (req, res) => {
+const updateDr = async (req, res) => {
   const {
     name,
     avatar,
@@ -131,11 +159,12 @@ const updateHf = async (req, res) => {
     openAt,
     closeAt,
     bio,
+    magerSpecialties
   } = req.body;
 
   try {
-    const hff = await hf.update({where:{id:req.params.id},
-      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+    const drr = await dr.update({where:{id:req.params.id},
+      include: { user: { include: { setting: true, role: true } },specialties:true },
 
       data: {
         description,
@@ -143,6 +172,7 @@ const updateHf = async (req, res) => {
         openAt,
         cost,
         xp,
+        magerSpecialties,
         user: {
           update: {
            
@@ -170,84 +200,29 @@ const updateHf = async (req, res) => {
         },
       },
     });
-    res.json(hff);
+    res.json(drr);
   } catch (err) {
     console.log(err);
     res.status(500).json(error(500, err));
   }
 };
-const deleteHf = async (req, res) => {
+const deleteDr = async (req, res) => {
   try {
-    let hff = await hf.delete({
+    let drr = await dr.delete({
       where: {
         id: req.params.id,
       },
-      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+      include: { user: { include: { setting: true, role: true } },specialties:true },
     });
-    if (!hff) {
+    if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     }
-    res.json(success("201", hff, "deleted"));
+    res.json(success("201", drr, "deleted"));
   } catch (err) {
     res.status(500).json(error(500, err));
   }
 };
 
-const hfChangePassword = async (req, res) => {
-  let errors = validationResult(req).array();
-  if (errors && errors.length > 0) {
-    return res.status(400).json(error(400, errors));
-  }
-  const { id, oldpass } = req.body;
-  const hff = await hf.findUnique({ where: { id: id } });
-  if (!hff) {
-    return res.status(404).json(error(404, "Not Found"));
-  }
-  let ok = await bcrypt.compare(oldpass, user.password);
-  if (ok) {
-    const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
-    try {
-      await hf.update({
-        data: {
-          user: { update: { password: hashedPassword } },
-        },
-      });
-
-      res.json({ hff });
-    } catch (err) {
-      res.status(500).json(error(500, err));
-    }
-  } else res.status(500).json(error(500, "wrong password"));
-};
-
-const addDr = async (req, res) => {
-  try {let phoneNumber=req.body.phoneNumber
-   let drr = await dr.findFirst({where:{user:{phoneNumber}}})
- console.log(drr)
-    if(!drr)
-    return res.status(404).json(error(404, "Not Found"));
-
-    let id = req.body.id
-    const hff = await hf.update({where:{id},
-      include:{  dr: { include: { user: true} }},
-  
-        data: {
-          dr:{
-             
-             connect:{id:drr.id}
-          
-          }}
-      });
-   
-
-    if (!hff) {
-      return res.status(404).json(error(404, "Not Found"));
-    }
-    res.json(success("201", hff, "done"));
-  } catch (err) {console.log(err)
-    res.status(500).json(error(500, err));
-  }
-};
 
 const addSpecialties = async (req, res) => {
   try {let name=req.body.name
@@ -258,11 +233,11 @@ const addSpecialties = async (req, res) => {
     return res.status(404).json(error(404, "Not Found"));
 
     let id = req.body.id
-    const hff = await hf.update({where:{id},  
+    const hff = await dr.update({where:{id},  
         data: {
           specialties:{
            
-              connect:spec.map(c => ({ id: parseInt(c.id)})) || [], }
+              connect:spec.map(c => ({ id: parseInt(c.id)}))}
              
           
           }
@@ -278,12 +253,11 @@ const addSpecialties = async (req, res) => {
   }
 };
 module.exports = {
-  getAllHf,
-  getHf,
-  updateHf,
-  deleteHf,
-  hfChangePassword,
+  getAllDr,
+  getDr,
+  updateDr,
+  deleteDr,
   signup,
-  addDr,
-  addSpecialties
+  addSpecialties,
+  getAllDrSameSpec
 };

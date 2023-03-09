@@ -1,4 +1,4 @@
-const { success, error } = require("../../utiles/responser");
+const { success, error } = require("../../../utiles/responser");
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const { PrismaClient } = require('@prisma/client')
@@ -28,19 +28,28 @@ const checkUserDuplicate = async (req,res, next)=>{
         }
 }
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
-const verifyToken = async (req, res, next)=>{
-    let token = req.headers['authorization']
-      if (!token) {
-        return res.status(403).send("A token is required for authentication");
-      }
-      try {token=token.split(' ')[1]
-        const decoded = jwt.verify(token,JWT_SECRET_KEY);
-        req.user = decoded;
-      } catch (err) {
-        return res.status(401).send(err);
-      }
-      return next();
-    };
+const verifyToken =  (Permission)=>{
+  return async (req, res, next) => {
+  let token = req.headers["authorization"];
+  
+  if (!token) {
+    return res.status(403).send("A token is required for authentication");
+  }
+  try {
+    token = token.split(" ")[1];
+    const decoded = jwt.verify(token, JWT_SECRET_KEY);
+    req.user = decoded;
+    console.log(decoded)
+    if ((!decoded.isVerify)||((Permission.length>0)&&(!Permission.includes(decoded.roleName))))
+    return res.status(401).json(error(401, "you dont have rolePermissions"));
+    
+
+  } catch (err) {
+    return res.status(401).send(err);
+  }
+  return next(); 
+};
+}
     
 
 module.exports = {checkUserDuplicate,verifyToken}
