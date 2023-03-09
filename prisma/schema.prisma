@@ -42,7 +42,7 @@ model Address {
 model Role {
   id       String  @id @default(uuid()) @db.Uuid
   name     String  @default("user") @db.VarChar(255)
-  isVerify Boolean @default(true)
+  isVerify Boolean @default(false)
 
   user User?
 }
@@ -68,6 +68,7 @@ model Dr {
   closeAt     Int
   xp          Int           @default(0)
   description String?       @db.Text
+  magerSpecialties  String
   specialties Specialties[]
   favuser     User[]        @relation("fav")
   hf          Hf?           @relation(fields: [hfId], references: [id])
@@ -94,6 +95,7 @@ model Hf {
 model Specialties {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(255)
+  photo String
   hf   Hf[]
   dr   Dr[]
 }

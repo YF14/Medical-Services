@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phoneNumber\":\"21321323124\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"user\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\",\r\n     \"city\":\"baghdad\",\r\n     \"town\":\"sad\"\r\n}",
+							"raw": "{\r\n    \"phoneNumber\":\"2132232142342w32e2433124\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"user\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\",\r\n     \"city\":\"baghdad\",\r\n     \"town\":\"sad\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -28,13 +28,49 @@
 					"response": []
 				},
 				{
+					"name": "otp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\":\"+9647700095180\",\r\n    \"id\":\"4c8ce1f5-d16a-4943-ba65-61d10a48029c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}:5000/auth/otp/"
+					},
+					"response": []
+				},
+				{
+					"name": "otp verify",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"OTP\":\"7601\",\r\n    \"id\":\"4c8ce1f5-d16a-4943-ba65-61d10a48029c\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}:5000/auth/verifyOTP/"
+					},
+					"response": []
+				},
+				{
 					"name": "sign in",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phoneNumber\":\"9647734534543\",\r\n    \"password\":\"qweq2qwqweewe\"\r\n  \r\n}",
+							"raw": "{\r\n    \"phoneNumber\":\"2132232142342w32e2433124\",\r\n    \"password\":\"qweq2qwqweewe\"\r\n  \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -63,7 +99,7 @@
 								"type": "text"
 							}
 						],
-						"url": "{{url}}:5000/user/f670eea0-9cc4-40f9-9f6f-597cafb1c859"
+						"url": "{{url}}:5000/user/f522ffa9-56c9-471e-8e42-d6d465c4e07b"
 					},
 					"response": []
 				},
@@ -85,7 +121,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{url}}:5000/user?size=10&page=242",
+							"raw": "{{url}}:5000/user?size=5&page=9",
 							"host": [
 								"{{url}}"
 							],
@@ -96,11 +132,11 @@
 							"query": [
 								{
 									"key": "size",
-									"value": "10"
+									"value": "5"
 								},
 								{
 									"key": "page",
-									"value": "242"
+									"value": "9"
 								}
 							]
 						}
@@ -141,7 +177,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"phoneNumber\":\"9624773453454333\",\r\n\"id\":\"f670eea0-9cc4-40f9-9f6f-597cafb1c859\",\r\n\"type\":\"hf\"}",
+							"raw": "{\r\n\"phoneNumber\":\"9624773453454333\",\r\n\"id\":\"f670eea0-9cc4-40f9-9f6f-597cafb1c859\",\r\n\"type\":\"hf\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -182,14 +218,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"baghdad\",\r\n\"town\":\"asda\",\r\n\"xp\":6,\r\n    \"phoneNumber\":\"9647734535454332323\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
+							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"baghdad\",\r\n\"town\":\"asda\",\r\n\"magerSpecialties\":\"wew\",\r\n\r\n\"xp\":6,\r\n    \"phoneNumber\":\"936474754332323\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost:5000/dr/signup/"
+						"url": "https://medical-services.onrender.com/dr/signup"
 					},
 					"response": []
 				},
@@ -199,7 +235,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:5000/dr/37d846b2-ab6b-43be-b16e-78666b279a40",
+							"raw": "http://localhost:5000/dr/a80493d0-8cce-4ca7-a68f-b49cf84d1e5e",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -207,7 +243,7 @@
 							"port": "5000",
 							"path": [
 								"dr",
-								"37d846b2-ab6b-43be-b16e-78666b279a40"
+								"a80493d0-8cce-4ca7-a68f-b49cf84d1e5e"
 							],
 							"query": [
 								{
@@ -265,7 +301,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"asdasdwe\",\r\n\"town\":\"asda\",\r\n\"xp\":6,\r\n    \"phoneNumber\":\"9647700095180\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
+							"raw": "{\"cost\":15,\r\n\"openAt\":1,\r\n\"closeAt\":3,\r\n\"description\":\"ASdasdasd\",\r\n\"city\":\"asdasdwe\",\r\n\"town\":\"asda\",\r\n\"xp\":6,\r\n\"magerSpecialties\":\"wew\",\r\n    \"phoneNumber\":\"9647700095180\",\r\n    \"password\":\"qweq2qwqweewe\",\r\n    \"name\":\"y89sdady\",\r\n    \"roleName\":\"admin\",\r\n    \"avatar\":\"jkljk\",\r\n    \"bio\":\"hjkh\",\r\n    \"dob\":\"2000-10-10\",\r\n    \"gender\":\"male\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -292,7 +328,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"name\":[\"y89sdadyweqy\",\"aaa\"],\r\n\"id\":\"53520a0d-4b5f-4d40-91dd-b4db47ea205d\"}",
+							"raw": "{\r\n\"name\":[\"y89sdadyweqy\",\"aaa\",\"ASdasdasdsa\"],\r\n\"id\":\"37d846b2-ab6b-43be-b16e-78666b279a40\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -331,7 +367,7 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:5000/hf/d889159e-9737-4692-b934-3c5dc0ee0535"
+						"url": "http://localhost:5000/hf/1766d333-04a1-438e-94d5-ee61d8f87aa4"
 					},
 					"response": []
 				},
@@ -391,7 +427,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"phoneNumber\":\"96477345354543323\",\r\n\"id\":\"f74adb2e-0eee-4ed4-b871-b7aa4bc3d374\"}",
+							"raw": "{\"phoneNumber\":\"964727345354543323\",\r\n\"id\":\"f74adb2e-0eee-4ed4-b871-b7aa4bc3d374\"}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -428,26 +464,52 @@
 				{
 					"name": "add Specialties",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaXNwbGF5TmFtZSI6Ink4OXNkYWR5IiwiaWQiOiJhZGM5MDIxNi0yMTI0LTRlZWEtYWY0Zi0zMTQ4MDJiMTU0MzkiLCJhY2Nlc3NUb2tlbiI6IiIsInJlbmV3YWxUb2tlbiI6IiIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE2NzQ3NTQ4NjMsImV4cCI6MTY3NDc1ODQ2M30.mOJE5zr7JMR_Au_asd4hhVb3O30W8J2q6mYMPYmZMRs"
+							}
+						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"aaa\"\r\n}",
+							"raw": "{\r\n\"name\":\"sada\",\r\n\"photo\":\"asda\"\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "http://localhost:5000/Specialties/addSpecialties/"
+						"url": "http://localhost:5000/Specialties/addSpecialties"
 					},
 					"response": []
 				},
 				{
 					"name": "get 1 Specialties by id",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaXNwbGF5TmFtZSI6Ink4OXNkYWR5IiwiaWQiOiJhZGM5MDIxNi0yMTI0LTRlZWEtYWY0Zi0zMTQ4MDJiMTU0MzkiLCJhY2Nlc3NUb2tlbiI6IiIsInJlbmV3YWxUb2tlbiI6IiIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE2NzQ3NTQ4NjMsImV4cCI6MTY3NDc1ODQ2M30.mOJE5zr7JMR_Au_asd4hhVb3O30W8J2q6mYMPYmZMRs"
+							}
+						},
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
 						"url": "http://localhost:5000/Specialties/1"
 					},
 					"response": []
@@ -498,7 +560,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"y89wqesdady\"\r\n\r\n}",
+							"raw": "{\r\n\"name\":\"sada\",\r\n\"photo\":\"asda\"\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -515,6 +577,179 @@
 						"method": "DELETE",
 						"header": [],
 						"url": "http://localhost:5000/Specialties/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "booking",
+			"item": [
+				{
+					"name": "add bookingav",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"start\":\"4:00\",\r\n    \"end\":\"15:00\",\r\n    \"time\":\"30\",\r\n    \"date\":\"11/14/2023\",\r\n    \"drId\":\"c2a5a444-e57c-498e-9cad-136f038cfccb\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/booking/addbookingav/"
+					},
+					"response": []
+				},
+				{
+					"name": "add booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"phoneNumber\":\"435345\",\r\n\"name\":\"sad\",\r\n    \"time\":\"11:30\",\r\n    \"date\":\"11/14/2023\",\r\n    \"drId\":\"c2a5a444-e57c-498e-9cad-136f038cfccb\",\r\n    \"userId\":\"8667635e-ac30-47be-86c9-ee80e32756cb\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/booking/addbooking/"
+					},
+					"response": []
+				},
+				{
+					"name": "get 1 bookingAv by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/Booking/d7b31d9c-df03-4c26-9410-8bb4ea580392"
+					},
+					"response": []
+				},
+				{
+					"name": "get 1 booking by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/Booking/booked/ea8940b2-57a3-4150-a0a8-3ef1a5038463"
+					},
+					"response": []
+				},
+				{
+					"name": "get all bookingAv",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaXNwbGF5TmFtZSI6Ink4OXNkYWR5IiwiaWQiOiJhZGM5MDIxNi0yMTI0LTRlZWEtYWY0Zi0zMTQ4MDJiMTU0MzkiLCJhY2Nlc3NUb2tlbiI6IiIsInJlbmV3YWxUb2tlbiI6IiIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE2NzQ3NTQ4NjMsImV4cCI6MTY3NDc1ODQ2M30.mOJE5zr7JMR_Au_asd4hhVb3O30W8J2q6mYMPYmZMRs"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/booking/?size=10&page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"booking",
+								""
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaXNwbGF5TmFtZSI6Ink4OXNkYWR5IiwiaWQiOiJhZGM5MDIxNi0yMTI0LTRlZWEtYWY0Zi0zMTQ4MDJiMTU0MzkiLCJhY2Nlc3NUb2tlbiI6IiIsInJlbmV3YWxUb2tlbiI6IiIsInRva2VuX3R5cGUiOiJiZWFyZXIiLCJpYXQiOjE2NzQ3NTQ4NjMsImV4cCI6MTY3NDc1ODQ2M30.mOJE5zr7JMR_Au_asd4hhVb3O30W8J2q6mYMPYmZMRs"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/booking/booked/?size=10&page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"booking",
+								"booked",
+								""
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"time\":\"4:30\",\r\n    \"date\":\"11/14/2023\",\r\n    \"drId\":\"c51dde07-d61a-40f0-982c-a47c7f7d7665\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/booking/139bb109-f00e-43d6-bcdf-0aed226a99e6"
+					},
+					"response": []
+				},
+				{
+					"name": "delete Specialties",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:5000/booking/f2eb8bda-3572-4127-b5b0-78b9df7e8658"
 					},
 					"response": []
 				}

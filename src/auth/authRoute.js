@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { signup, signin,getOtp } = require("./authController");
+const { signup, signin,getOtp,verifyOTP } = require("./authController");
 const { checkUserDuplicate } = require("./verifySignup");
 const { check, body } = require("express-validator");
 router.post(
@@ -28,5 +28,9 @@ router.post(
 router.post(
   "/otp",
   getOtp
+);
+router.post(
+  "/verifyOTP",
+  verifyOTP
 );
 module.exports = router;

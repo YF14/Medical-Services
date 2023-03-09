@@ -29,6 +29,7 @@ const signup = async (req, res) => {
       openAt,
       closeAt,
       xp,
+      magerSpecialties
     } = req.body;
     const drr = await dr.create({
       data: {
@@ -37,6 +38,7 @@ const signup = async (req, res) => {
         openAt,
         cost,
         xp,
+        magerSpecialties,
         user: {
           create: {
             phoneNumber,
@@ -131,6 +133,7 @@ const updateDr = async (req, res) => {
     openAt,
     closeAt,
     bio,
+    magerSpecialties
   } = req.body;
 
   try {
@@ -143,6 +146,7 @@ const updateDr = async (req, res) => {
         openAt,
         cost,
         xp,
+        magerSpecialties,
         user: {
           update: {
            

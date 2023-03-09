@@ -14,10 +14,11 @@ const addSpecialties = async (req, res) => {
   try {
    
 
-    const {name} = req.body;
+    const {name,photo} = req.body;
     const spec = await Specialties.create({
       data: {
-      name}
+      name,
+      photo}
     });
     res.json(success(201, spec, "new Specialties "));
   } catch (err) {
@@ -74,7 +75,7 @@ const getSpecialties = async (req, res) => {
 const updateSpecialties = async (req, res) => {
   const {
     name,
-    
+    photo
   } = req.body;
 
   try {  let id =req.params.id
@@ -83,7 +84,8 @@ const updateSpecialties = async (req, res) => {
    
 
       data: {
-       name,}
+       name,
+       photo}
     });
     res.json(spec);
   } catch (err) {

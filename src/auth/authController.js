@@ -110,7 +110,7 @@ const signin = async (req, res) => {
       success(
         200,
         {
-        
+        id:user.id,
           displayName: user.name,
           accessToken: token,
           renewalToken: refreshToken,
@@ -126,40 +126,53 @@ const signin = async (req, res) => {
 };
 
 const getOtp = async (req, res) => {
+  var exp=timeOut=now = new Date()
+  var userTimezoneOffset = exp.getTimezoneOffset() * 60000;
+  timeOut=new Date(timeOut.getTime() - userTimezoneOffset);
+  exp=new Date(exp.getTime() - userTimezoneOffset);
+  now=new Date(now.getTime() - userTimezoneOffset);
   try { const {id,phoneNumber } = req.body;
   const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 let otp;
    otp = await Otp.findFirst({where:{User:{some:{id}}}
   ,include :{User:true}})
   console.log(otp,"ffff");
-
   if(!otp){
    otp = await Otp.create({
     data:{
     User:{connect:{id}},
     otp:parseInt(OTP),
-    exp:new Date(new Date()+ 180000) ,
-    timeOut:new Date(new Date()+ 30000) ,
+    exp:new Date (exp.setSeconds(exp.getSeconds()+ 180)),
+    timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
     
-  }});}
+  }});
+  // client.messages
+  //   .create({body:OTP, from: '+1 567 313 1123', to: phoneNumber})
+  //   .then(message => console.log(message.sid));
+    return res.status(200).json(success(200,otp, "done"));
+
+  }
   console.log(otp); 
-  if(!otp||otp.timeOut.getTime()<new Date().getTime()){
+  console.log(otp.timeOut.getTime(),"diff",new Date().getTime()); 
+
+  if((otp.timeOut.getTime() > now.getTime())){
       return res.status(500).json(error(500, "timeOut"));
-    }
- 
+  } 
+ if(otp){
       otp = await Otp.update({where:{id:otp.id},
        data:{
        otp:parseInt(OTP),
-       exp:new Date(new Date()+ 180000) ,
-       timeOut:new Date(new Date()+ 30000) ,
+       exp:new Date (exp.setSeconds(exp.getSeconds()+ 180)),
+       timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
        
-     }});
-     return res.status(500).json(error(500, "done"));
-    
-   
-      // client.messages
+     }});}
+    //  client.messages
     // .create({body:OTP, from: '+1 567 313 1123', to: phoneNumber})
     // .then(message => console.log(message.sid));
+   return res.status(200).json(success(200,otp, "done"));
+    
+   
+    
         
 
      } catch (err) {
@@ -172,26 +185,32 @@ const verifyOTP = async (req, res) => {
    let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
-  }
+  } var now = new Date()
+  var userTimezoneOffset = now.getTimezoneOffset() * 60000;
+  now=new Date(now.getTime() - userTimezoneOffset);
   try {
-    const {OTP } = req.body;
-  
-
-    if (Otp.dataValues.exp < Date.now())
+    const {OTP,id } = req.body;
+  let userr = await User.findUnique({where:{id},include:{role:true,otp:true}})
+console.log(userr)
+    if (!userr.otp||userr.otp.exp.getTime() < now.getTime())
       return res
         .status(400)
-        .json(error(400, "your otp is expire ,make new one ")); 
+        .json(error(400, "your otp is expired or didn't exist ,make new one ")); 
 
-    if (OTP == Otp.dataValues.otp) {
-      console.log(Otp.dataValues.userID);
-      let rol = await role.update(
-        {
-          isVerified: true,
-        },
-        {
-          where: { userID: Otp.dataValues.userID },
+    if (OTP == userr.otp.otp) {
+      console.log(userr.otp);
+      let rol = await User.update(
+        {data:{
+         role:{update:{ isVerify: true,}}
+         
+        }
+          ,
+        
+        
+          where: {id:userr.id },
         }
       );
+      
       return res.status(201).json(success(200, { rol }));
     } else return res.status(401).json(error(401, "wrong "));
   } catch (err) {
