@@ -93,7 +93,7 @@ const deleteUser = async (req, res) => {
       });
       if (user.role.name == "superadmin")
         return res.status(404).json(error(404, "you dont have permission"));
-    }
+    }console.log(user)
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
     }

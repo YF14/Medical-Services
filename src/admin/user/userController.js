@@ -45,7 +45,7 @@ const getUser = async (req, res) => {
   console.log(req.user);
   try {
     let user;
-    if (req.user.id == req.params.id || req.user.name == "superadmin") {
+    if (req.user.id == req.params.id || req.user.roleName == "superadmin") {
       user = await User.findUnique({
         where: { id: req.params.id },
         include: {
@@ -56,12 +56,12 @@ const getUser = async (req, res) => {
           favoritehf: true,
         },
       });
+    }  if (!user) {
+      return res.status(404).json(error(404, "Not Found"));
     }
     if (user.role.name == "superadmin")
       return res.status(404).json(error(404, "you dont have permission"));
-    if (!user) {
-      return res.status(404).json(error(404, "Not Found"));
-    }
+  
     res.json(success("200", user, "sdas"));
   } catch (e) {
     console.log("ewaweaw", e);
@@ -73,7 +73,7 @@ const updateUser = async (req, res) => {
 
   try {
     let user;
-    if (req.user.id == req.params.id || req.user.name == "superadmin")
+    if (req.user.id == req.params.id || req.user.roleName == "superadmin")
       user = await User.findUnique({
         where: { id: req.params.id },
         include: { role: true },
@@ -118,7 +118,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     let user;
-    if (req.user.id == req.params.id || req.user.name == "superadmin") {
+    if (req.user.id == req.params.id || req.user.roleName == "superadmin") {
       user = await User.findUnique({
         where: { id: req.params.id },
         include: { role: true },
@@ -126,6 +126,7 @@ const deleteUser = async (req, res) => {
       if (user.role.name == "superadmin")
         return res.status(404).json(error(404, "you dont have permission"));
     }
+    console.log(user)
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
     }
@@ -157,7 +158,7 @@ const userChangePassword = async (req, res) => {
   }
   const { id, oldpass } = req.body;
   let user;
-  if (req.user.id == req.params.id || req.user.name == "superadmin") {
+  if (req.user.id == req.params.id || req.user.roleName == "superadmin") {
     user = await User.findUnique({
       where: { id: id },
       include: { role: true },
@@ -193,7 +194,7 @@ const addFavorite = async (req, res) => {
     if (type == "dr") {
       drr = await dr.findFirst({ where: { id: idDr } });
       if (!drr) return res.status(404).json(error(404, "Not Found"));
-      if (req.user.id == idUser || req.user.name == "superadmin")
+      if (req.user.id == idUser || req.user.roleName == "superadmin")
         hff = await User.update({
           where: { id: idUser },
           data: {
@@ -205,7 +206,7 @@ const addFavorite = async (req, res) => {
     } else if (type == "hf") {
       drr = await hf.findFirst({ where: { id: idDr } });
       if (!drr) return res.status(404).json(error(404, "Not Found"));
-      if (req.user.id == idUser || req.user.name == "superadmin")
+      if (req.user.id == idUser || req.user.roleName == "superadmin")
         hff = await User.update({
           where: { id: idUser },
           data: {
@@ -234,7 +235,7 @@ const removeFavorite = async (req, res) => {
     if (type == "dr") {
       drr = await dr.findFirst({ where: { id: idDr } });
       if (!drr) return res.status(404).json(error(404, "Not Found"));
-      if (req.user.id == idUser || req.user.name == "superadmin")
+      if (req.user.id == idUser || req.user.roleName == "superadmin")
         hff = await User.update({
           where: { id: idUser },
           data: {
@@ -246,7 +247,7 @@ const removeFavorite = async (req, res) => {
     } else if (type == "hf") {
       drr = await hf.findFirst({ where: { id: idDr } });
       if (!drr) return res.status(404).json(error(404, "Not Found"));
-      if (req.user.id == idUser || req.user.name == "superadmin")
+      if (req.user.id == idUser || req.user.roleName == "superadmin")
         hff = await User.update({
           where: { id: idUser },
           data: {
