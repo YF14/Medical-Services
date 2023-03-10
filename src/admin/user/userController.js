@@ -277,5 +277,4 @@ module.exports = {
   userChangePassword,
   addFavorite,
   removeFavorite,
-  getUserIdByPhoneNumber
 };
