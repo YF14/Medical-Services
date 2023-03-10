@@ -268,6 +268,27 @@ const removeFavorite = async (req, res) => {
   }
 };
 
+const getUserIdByPhoneNumber = async (req, res) => {
+  let errors = validationResult(req).array();
+  if (errors && errors.length > 0) {
+    return res.status(400).json(error(400, errors));
+  }
+  console.log(req.user);
+  try {
+    
+    
+     let user = await User.findFirst({
+        where:{ phoneNumber:req.body.phoneNumber},
+      select:{id:true}
+      });
+     if (!user) {
+      return res.status(404).json(error(404, "Not Found"));
+    }
+   
+    res.json(success("200", user ));
+  } catch (e) {
+  }
+};
 module.exports = {
   getAllUser,
   getUser,
@@ -275,5 +296,6 @@ module.exports = {
   deleteUser,
   userChangePassword,
   addFavorite,
-  removeFavorite
+  removeFavorite,
+  getUserIdByPhoneNumber
 };
