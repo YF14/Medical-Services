@@ -58,10 +58,10 @@ const getSpecialties = async (req, res) => {
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
-  let id =req.params.id
+  let {name} =req.body
   try {
-    const spec = await Specialties.findUnique({
-      where: { id:parseInt(id)},
+    const spec = await Specialties.findFirst({
+      where: { name},
      
     });
     if (!spec) {

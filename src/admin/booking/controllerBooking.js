@@ -74,7 +74,7 @@ const addBooking = async (req, res) => {
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
-  const {name,phoneNumber,date,time,userId,drId} = req.body;
+  const {name,phoneNumber,date,time,userId,drId,qrCode} = req.body;
   try {var datee = new Date(date)
     var userTimezoneOffset = datee.getTimezoneOffset() * 60000;
     datee=new Date(datee.getTime() - userTimezoneOffset);
@@ -91,6 +91,7 @@ const addBooking = async (req, res) => {
       data: {time,
       name,
       phoneNumber:parseInt(phoneNumber),
+      qrCode,
       dr:{ 
         connect:{id:drId}
      },
@@ -132,6 +133,32 @@ const getAllBookingAv = async (req, res) => {
     skip: (pages - 1) * sizes,
     take: sizes,
    include:{time :true,dr:true}
+  });
+  console.log("SdSD", sizes, pages, nPage);
+  res.json(success(`current_page: ${pages}`,booking, `TOTAL PAGES ${nPage}`));
+} catch (errorr) {console.log(errorr)
+  return res.status(500).json(error(500, errorr));
+
+}};
+const getAllBookingAvByDr= async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await BookingAv.count();
+  
+  if(!count>0)
+  return res.status(404).json("empty");
+
+  let sizes = 2;
+  let pages = 1;
+  if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+  if (!Number.isNaN(page) && page > 0) pages = page;
+  let nPage = Math.ceil(count / sizes);
+  if (pages > nPage) pages = nPage;
+  const booking = await BookingAv.findMany({
+    skip: (pages - 1) * sizes,
+    take: sizes,
+   include:{time :true,dr:{where:{id:req.params.id}}}
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`,booking, `TOTAL PAGES ${nPage}`));
@@ -233,6 +260,32 @@ const getAllBooking = async (req, res) => {
   return res.status(500).json(error(500, errorr));
 
 }};
+const getAllBookingByUser = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await Booking.count();
+  
+  if(!count>0)
+  return res.status(404).json("empty");
+
+  let sizes = 2;
+  let pages = 1;
+  if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+  if (!Number.isNaN(page) && page > 0) pages = page;
+  let nPage = Math.ceil(count / sizes);
+  if (pages > nPage) pages = nPage;
+  const booking = await Booking.findMany({
+    skip: (pages - 1) * sizes,
+    take: sizes,
+    include:{user :{where:{id:req.params.id}},dr:true}
+  });
+  console.log("SdSD", sizes, pages, nPage);
+  res.json(success(`current_page: ${pages}`,booking, `TOTAL PAGES ${nPage}`));
+} catch (errorr) {console.log(errorr)
+  return res.status(500).json(error(500, errorr));
+
+}};
 const getBooking = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -262,5 +315,7 @@ module.exports = {getAllBooking,
    updateBooking,
   deleteBookingAv,
    addBooking,
-  addbookingAv
+  addbookingAv,
+  getAllBookingAvByDr,
+  getAllBookingByUser
 };

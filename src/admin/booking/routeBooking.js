@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {
-    updateBooking, deleteBookingAv,getBookingAv, addbookingAv,getAllBookingAv,addBooking,getAllBooking,getBooking} = require('./controllerBooking')
+    updateBooking, deleteBookingAv,getBookingAv, addbookingAv,getAllBookingAv,addBooking,getAllBooking,getBooking,getAllBookingAvByDr,getAllBookingByUser} = require('./controllerBooking')
      
     
     
@@ -16,9 +16,11 @@ const {check, body,param} = require('express-validator')
  router.post('/addbooking',verifyToken(["hf","dr","user","superadmin"]),addBooking)
  router.get('/booked',verifyToken(["superadmin"]),getAllBooking )
  router.get('/',verifyToken(["superadmin"]),getAllBookingAv )
+ router.get('/dr/:id',verifyToken(["user","hf","dr","superadmin"]),getAllBookingAvByDr )
+ router.get('/user/:id',verifyToken(["user","hf","dr","superadmin"]),getAllBookingByUser )
  router.put('/:id',verifyToken(["hf","dr","superadmin"]),updateBooking)
  router.delete('/:id',verifyToken(["hf","dr","superadmin"]),deleteBookingAv)
- router.get('/:id',verifyToken(["hf","dr","user","superadmin"]),getBookingAv )
+ router.get('/:id',verifyToken(["hf","dr","user","superadmin"]),getBookingAv)
  router.get('/booked/:id',verifyToken(["hf","dr","user","superadmin"]),getBooking )
 // ,verifyToken
 // ,verifyToken

@@ -143,6 +143,25 @@ const getDr = async (req, res) => {
     return res.status(500).json(error(500, "server side error"));
   }
 };
+const getDrName = async (req, res) => {
+  let errors = validationResult(req).array();
+  if (errors && errors.length > 0) {
+    return res.status(400).json(error(400, errors));
+  }
+  try {
+    const drr = await dr.findFirst({
+      where: { name: req.body.name },
+      include: { user: { include: { setting: true, role: true } },specialties:true },
+    });
+    if (!drr) {
+      return res.status(404).json(error(404, "Not Found"));
+    }
+    res.json(success("200", drr, "sdas"));
+  } catch (err) {
+    console.log("ewaweaw", err);
+    return res.status(500).json(error(500, "server side error"));
+  }
+};
 const updateDr = async (req, res) => {
   const {
     name,
@@ -259,5 +278,6 @@ module.exports = {
   deleteDr,
   signup,
   addSpecialties,
-  getAllDrSameSpec
+  getAllDrSameSpec,
+  getDrName
 };

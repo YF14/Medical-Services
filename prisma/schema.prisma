@@ -121,6 +121,7 @@ model Booking {
   phoneNumber Int
   name        String
   time        String
+  qrCode String
 }
 
 model Otp {

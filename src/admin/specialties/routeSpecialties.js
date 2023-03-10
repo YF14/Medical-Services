@@ -4,10 +4,10 @@ const {getAllSpecialties,getSpecialties,deleteSpecialties,updateSpecialties,addS
 const {verifyToken,checkUserDuplicate}=require('../auth/verifyToken')
 const {check, body,param} = require('express-validator')
 
-router.put('/:id',verifyToken(["superadmin"]),updateSpecialties)
+router.put('/:id',verifyToken(["superadmin"],updateSpecialties))
 router.delete('/:id',verifyToken(["superadmin"]),deleteSpecialties)
-router.get('/',verifyToken(["superadmin"]),getAllSpecialties )
-router.get('/:id',verifyToken(["superadmin"]),getSpecialties )
+router.get('/',verifyToken(["user","dr","hf","superadmin"]),getAllSpecialties )
+router.get('/one',verifyToken(["user","dr","hf","superadmin"]),getSpecialties )
 router.post('/addSpecialties',check('name').not().isEmpty().withMessage('name number is required'),verifyToken(["superadmin"]),addSpecialties)
 
 // ,verifyToken
