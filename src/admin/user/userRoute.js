@@ -1,11 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const {getAllUser,getUser,deleteUser,updateUser,userChangePassword,addFavorite,removeFavorite,getUserIdByPhoneNumber} = require('./userController')
+const {getAllUser,getUser,deleteUser,updateUser,userChangePassword,addFavorite,removeFavorite} = require('./userController')
 const {verifyToken,checkUserDuplicate}=require('../auth/verifyToken')
 const {check, body,param} = require('express-validator')
 router.get('/',verifyToken(["superadmin"]),getAllUser )
 
-router.get('/phonenumber',verifyToken(["user","dr","hf","superadmin"]),getUserIdByPhoneNumber )
 
 //,param('id').not().isEmpty().withMessage('id is required').isLength({max:35})
 router.put('/:id',checkUserDuplicate,verifyToken(["user","superadmin"]),updateUser)

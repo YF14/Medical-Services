@@ -134,17 +134,24 @@ const getOtp = async (req, res) => {
   timeOut=new Date(timeOut.getTime() - userTimezoneOffset);
   exp=new Date(exp.getTime() - userTimezoneOffset);
   now=new Date(now.getTime() - userTimezoneOffset);
-  try { const {id,phoneNumber } = req.body;
+  try { const {phoneNumber } = req.body;
   const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 let otp;
-   otp = await Otp.findFirst({where:{User:{some:{id}}}
+let user = await User.findFirst({
+  where:{ phoneNumber:req.body.phoneNumber},
+select:{id:true}
+});
+if (!user) {
+return res.status(404).json(error(404, "Not Found"));
+}
+   otp = await Otp.findFirst({where:{User:{some:{phoneNumber}}}
   ,include :{User:true}})
-  console.log(otp,"ffff");
+  console.log(otp,"ffff"); 
   if(!otp){
    otp = await Otp.create({
     data:{
-    User:{connect:{id}},
-    otp:parseInt(OTP),
+    User:{connect:{id:user.id}}, 
+    otp:parseInt(OTP), 
     exp:new Date (exp.setSeconds(exp.getSeconds()+ 180)),
     timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
     
