@@ -163,7 +163,7 @@ return res.status(404).json(error(404, "Not Found"));
 
   }
   console.log(otp); 
-  console.log(otp.timeOut.getTime(),"diff",new Date().getTime()); 
+  console.log(otp.timeOut.getTime()> now.getTime()); 
 
   if((otp.timeOut.getTime() > now.getTime())){
       return res.status(500).json(error(500, "timeOut"));
