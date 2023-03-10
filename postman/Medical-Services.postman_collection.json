@@ -52,14 +52,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"OTP\":\"4133\",\r\n    \"id\":\"1e9085b6-d2f1-47b3-8704-ad22c163f3b5\"\r\n}",
+							"raw": "{\r\n    \"OTP\":\"6108\",\r\n    \"phoneNumber\":\"+9647700095180\",\r\n    \"type\":\"forget\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}:5000/auth/verifyOTP/"
+						"url": "{{url}}:5000/admin/auth/verifyOTP/"
 					},
 					"response": []
 				},
@@ -70,7 +70,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phoneNumber\":\"964 774 614 0233\",\r\n    \"password\":\"123456789\"\r\n  \r\n}",
+							"raw": "{\r\n    \"phoneNumber\":\"+9647700095180\",\r\n    \"password\":\"qweq2qwqweewe\"\r\n  \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -88,14 +88,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"OTP\":\"6197\",\r\n     \"id\":\"82212dc5-9ce7-4fae-a01e-d97486fa07cd\",\r\n    \"password\":\"qweq2qwqweewe\"\r\n  \r\n}",
+							"raw": "{    \"phoneNumber\":\"+9647700095180\",\r\n    \"password\":\"weqewq\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}:5000/auth/forgetPassword"
+						"url": "{{url}}:5000/admin/auth/forgetPassword"
 					},
 					"response": []
 				},
