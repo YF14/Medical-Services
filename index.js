@@ -20,7 +20,7 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.send("<h1>This is Clinic Restful API</h1>");
 });
-process.env.TZ = "Asia/Baghdad";
+
 // call routers
 app.use("/admin/auth", authRoute);
 app.use("/admin/user", userRoute);

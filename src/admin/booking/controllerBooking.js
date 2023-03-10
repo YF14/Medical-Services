@@ -4,7 +4,8 @@ const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
 const { Booking,BookingAv,time } = new PrismaClient();
-
+var moment = require('moment-timezone');
+moment().tz('Asia/Baghdad').format();
 const addbookingAv = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -12,13 +13,11 @@ const addbookingAv = async (req, res) => {
   }
 
   try {const {time,date,start,end,drId} = req.body;
-    var datee = new Date(date)
-  var userTimezoneOffset = datee.getTimezoneOffset() * 60000;
-  datee=new Date(datee.getTime() - userTimezoneOffset);
+    
   
 
      const check = await BookingAv.findMany({
-    where :{date: new Date(datee),dr:{every:{id:drId}}},
+    where :{date: moment(date).format(),dr:{every:{id:drId}}},
    })
    console.log(check)
 if (check.length>0)
@@ -54,7 +53,7 @@ console.log(resulte)
       },
         
       
-      date:new Date(datee),
+      date:moment(date).format(),
       dr:{
              
         connect:{id:drId}
@@ -75,12 +74,11 @@ const addBooking = async (req, res) => {
     return res.status(400).json(error(400, errors));
   }
   const {name,phoneNumber,date,time,userId,drId,qrCode} = req.body;
-  try {var datee = new Date(date)
-    var userTimezoneOffset = datee.getTimezoneOffset() * 60000;
-    datee=new Date(datee.getTime() - userTimezoneOffset);
+  try {
+   
     
    const check = await BookingAv.findFirst({include:{time:{where:{time:time,av:true}}},
-    where :{date: new Date(datee),dr:{every:{id:drId}}},
+    where :{date: moment(date).format(),dr:{every:{id:drId}}},
   })
 
      
@@ -189,14 +187,11 @@ const getBookingAv = async (req, res) => {
 const updateBooking = async (req, res) => {
 
   try {const {date,time,drId} = req.body;
-  var datee = new Date(date)
-    var userTimezoneOffset = datee.getTimezoneOffset() * 60000;
-    datee=new Date(datee.getTime() - userTimezoneOffset);
-    
+
   
    const check = await BookingAv.findFirst(
     {include:{time:{where:{time:time,av:true}}},
-    where :{date: new Date(datee),dr:{every:{id:drId}}},
+    where :{date: moment(date).format(),dr:{every:{id:drId}}},
 
     
      

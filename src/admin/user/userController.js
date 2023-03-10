@@ -4,7 +4,8 @@ const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
 const { User, role, setting, Favorite, dr, hf } = new PrismaClient();
-
+var moment = require('moment-timezone');
+moment().tz('Asia/Baghdad').format();
 const getAllUser = async (req, res) => {
   const size = parseInt(req.query.size);
   const page = parseInt(req.query.page);

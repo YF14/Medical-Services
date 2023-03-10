@@ -7,7 +7,6 @@ require("dotenv").config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const REFREASHJWT_SECRET_KEY = process.env.REFREASHJWT_SECRET_KEY;
 const {User,Otp} = new PrismaClient();
-process.env.TZ = "Asia/Baghdad";
 const accountSid = "AC79a2c45010916630b4cdb5d26cef6f34";
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VA8c0dbbdd0f46ff2143ecc9c8dae8fa5d";
@@ -193,14 +192,12 @@ const verifyOTP = async (req, res) => {
    let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
-  } var now = new Date()
-  var userTimezoneOffset = now.getTimezoneOffset() * 60000;
-  now=new Date(now.getTime() - userTimezoneOffset);
+  }
   try {
     const {OTP,phoneNumber } = req.body;
   let userr = await User.findUnique({where:{phoneNumber},include:{role:true,otp:true}})
 console.log(userr)
-    if (!userr.otp||userr.otp.exp.getTime() < now.getTime())
+    if (!userr.otp||userr.otp.exp.valueOf() < moment().valueOf())
       return res
         .status(400)
         .json(error(400, "your otp is expired or didn't exist ,make new one ")); 
@@ -242,9 +239,6 @@ const forgetPassword = async (req, res) => {
     return res.status(400).json(error(400, errors));
   }
   const { phoneNumber,OTP} = req.body;
-  var now = new Date()
-  var userTimezoneOffset = now.getTimezoneOffset() * 60000;
-  now=new Date(now.getTime() - userTimezoneOffset);
   let user = await User.findUnique({
       where: { phoneNumber: phoneNumber },
       include: { role: true ,otp:true},
