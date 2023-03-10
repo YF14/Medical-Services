@@ -199,14 +199,23 @@ const verifyOTP = async (req, res) => {
   var userTimezoneOffset = now.getTimezoneOffset() * 60000;
   now=new Date(now.getTime() - userTimezoneOffset);
   try {
-    const {OTP,id } = req.body;
-  let userr = await User.findUnique({where:{id},include:{role:true,otp:true}})
+    const {OTP,phoneNumber } = req.body;
+  let userr = await User.findUnique({where:{phoneNumber},include:{role:true,otp:true}})
 console.log(userr)
     if (!userr.otp||userr.otp.exp.getTime() < now.getTime())
       return res
         .status(400)
         .json(error(400, "your otp is expired or didn't exist ,make new one ")); 
+if(req.body.type=="forget")
+{if (OTP == userr.otp.otp)
+{      return res.status(200).json(success(200, "true"));
 
+
+}
+else return res.status(200).json(error(200, "wrong otp"));
+
+}
+else if (req.body.type=="verify")
     if (OTP == userr.otp.otp) {
       console.log(userr.otp);
       let rol = await User.update(
@@ -234,12 +243,12 @@ const forgetPassword = async (req, res) => {
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
-  const { id,OTP} = req.body;
+  const { phoneNumber,OTP} = req.body;
   var now = new Date()
   var userTimezoneOffset = now.getTimezoneOffset() * 60000;
   now=new Date(now.getTime() - userTimezoneOffset);
   let user = await User.findUnique({
-      where: { id: id },
+      where: { phoneNumber: phoneNumber },
       include: { role: true ,otp:true},
     })
   
@@ -248,17 +257,12 @@ const forgetPassword = async (req, res) => {
   }
   if (user.role.name == "superadmin")
     return res.status(404).json(error(404, "you dont have permission"));
-    if (!user.otp||user.otp.exp.getTime() < now.getTime())
-      return res
-        .status(400)
-        .json(error(400, "your otp is expired or didn't exist ,make new one ")); 
-  console.log(user.otp.otp==OTP)
-  if (user.otp.otp==OTP) {
+   {
     const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
     try {
       user = await User.update({
         data: { password: hashedPassword },
-        where: { id: id },
+        where: { phoneNumber: phoneNumber },
       });
 
       res.json({ user });
@@ -266,7 +270,7 @@ const forgetPassword = async (req, res) => {
       console.log(err);
       res.status(500).json(error(500, err));
     }
-  } else res.status(500).json(error(500, "wrong password"));
+  } 
 };
 module.exports = { signup, signin,getOtp,verifyOTP ,forgetPassword};
 
