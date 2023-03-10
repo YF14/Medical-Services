@@ -7,12 +7,13 @@ require("dotenv").config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const REFREASHJWT_SECRET_KEY = process.env.REFREASHJWT_SECRET_KEY;
 const {User,Otp} = new PrismaClient();
-
+process.env.TZ = "Asia/Baghdad";
 const accountSid = "AC79a2c45010916630b4cdb5d26cef6f34";
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = "VA8c0dbbdd0f46ff2143ecc9c8dae8fa5d";
 const client = require("twilio")(accountSid, authToken);
-
+var moment = require('moment-timezone');
+moment().tz('Asia/Baghdad').format();
 const signup =async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -129,11 +130,7 @@ const signin = async (req, res) => {
 };
 
 const getOtp = async (req, res) => {
-  var exp=timeOut=now = new Date()
-  var userTimezoneOffset = exp.getTimezoneOffset() * 60000;
-  timeOut=new Date(timeOut.getTime() - userTimezoneOffset);
-  exp=new Date(exp.getTime() - userTimezoneOffset);
-  now=new Date(now.getTime() - userTimezoneOffset);
+  var exp,timeOut=moment()
   try { const {phoneNumber } = req.body;
   const OTP = `${Math.floor(1000 + Math.random() * 9000)}`;
 let otp;
@@ -141,6 +138,7 @@ let user = await User.findFirst({
   where:{ phoneNumber:req.body.phoneNumber},
 select:{id:true}
 });
+console.log("Adsa",moment().valueOf())
 if (!user) {
 return res.status(404).json(error(404, "Not Found"));
 }
@@ -152,8 +150,8 @@ return res.status(404).json(error(404, "Not Found"));
     data:{
     User:{connect:{id:user.id}}, 
     otp:parseInt(OTP), 
-    exp:new Date (exp.setSeconds(exp.getSeconds()+ 180)),
-    timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
+    exp:moment(exp).add(180, 's').format(),
+       timeOut:moment(timeOut).add(30, 's').format()
     
   }});
   client.messages
@@ -163,17 +161,17 @@ return res.status(404).json(error(404, "Not Found"));
 
   }
   console.log(otp); 
-  console.log(otp.timeOut.getTime(),"diff",now.getTime()); 
+  console.log(otp.timeOut.valueOf(),"diff",moment().valueOf()); 
 
-  if((otp.timeOut.getTime() > now.getTime())){
+  if((otp.timeOut.valueOf() > moment().valueOf())){
       return res.status(500).json(error(500, "timeOut"));
   } 
  if(otp){
       otp = await Otp.update({where:{id:otp.id},
        data:{
        otp:parseInt(OTP),
-       exp:new Date (exp.setSeconds(exp.getSeconds()+ 180)),
-       timeOut:new Date(timeOut.setSeconds(timeOut.getSeconds()+ 30))
+       exp:moment(exp).add(180, 's').format(),
+       timeOut:moment(timeOut).add(30, 's').format()
        
      }});}
      client.messages
