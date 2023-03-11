@@ -116,7 +116,7 @@ const getAllDrSameSpec = async (req, res) => {
   const drr = await Specialties.findMany({where:{name},
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { dr:{include:{user:true}} },
+    include:{dr:{include :{user: { include: { setting: true, role: true }} } }},
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
