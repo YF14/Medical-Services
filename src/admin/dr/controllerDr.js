@@ -90,7 +90,7 @@ const getAllDr = async (req, res) => {
   const drr = await dr.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { user: { include: { setting: true, role: true } },specialties:true },
+    include: { user: { include: { setting: true, role: true,address:true } },specialties:true },
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
@@ -116,7 +116,7 @@ const getAllDrSameSpec = async (req, res) => {
   const drr = await Specialties.findMany({where:{name},
     skip: (pages - 1) * sizes,
     take: sizes,
-    include:{dr:{include :{user: { include: { setting: true, role: true }} } }},
+    include:{dr:{include :{user: { include: { address:true,setting: true, role: true }} } }},
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
