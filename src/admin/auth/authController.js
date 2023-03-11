@@ -112,7 +112,8 @@ const signin = async (req, res) => {
       success(
         200,
         {
-        id:user.id,
+          id:user.id,
+          verify:user.role.isVerify,
           roleName:user.role.name,
           displayName: user.name,
           accessToken: token,
