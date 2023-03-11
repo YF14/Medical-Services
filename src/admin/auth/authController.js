@@ -208,7 +208,7 @@ if(req.body.type=="forget")
 
 
 }
-else return res.status(200).json(error(200, "wrong otp"));
+else return res.status(401).json(error(401, "wrong otp"));
 
 }
 else if (req.body.type=="verify")
@@ -249,7 +249,7 @@ const forgetPassword = async (req, res) => {
     return res.status(404).json(error(404, "Not Found"));
   }
   if (user.role.name == "superadmin")
-    return res.status(404).json(error(404, "you dont have permission"));
+    return res.status(401).json(error(401, "you dont have permission"));
    {
     const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
     try {
