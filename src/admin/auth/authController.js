@@ -265,5 +265,61 @@ const forgetPassword = async (req, res) => {
     }
   } 
 };
-module.exports = { signup, signin,getOtp,verifyOTP ,forgetPassword};
+const refreshToken = async (req, res)=>{
+  let tokenn = req.body.tokenn
+        if (!tokenn) {
+        return res.status(403).send("A refresh token is required for authentication");
+      } 
+      let decoded
+      try {   
+       decoded = jwt.verify(tokenn,REFREASHJWT_SECRET_KEY);
+       console.log(decoded)
+
+    } catch (err) {
+      return res.status(401).send(err);
+    }        
+
+
+      let token = jwt.sign(
+        { roleName:decoded.roleName,
+          displayName: decoded.name,
+          id: decoded.id,
+          isVerify:decoded.isVerify,
+          accessToken: "",
+          renewalToken: "",
+          token_type: "bearer",
+        },
+        JWT_SECRET_KEY,
+        {
+          expiresIn: 3600, // 1 hour
+        }
+      );
+      let refreshToken = jwt.sign(
+        { roleName:decoded.roleName,
+          displayName: decoded.name,
+          id: decoded.id,
+          isVerify:decoded.isVerify,
+          accessToken: "",
+          renewalToken: "",
+          token_type: "bearer",
+        },
+        REFREASHJWT_SECRET_KEY,
+        {
+          expiresIn: 7200, 
+        }
+      );
+     
+       res.status(200).json(success(200,{
+        id:decoded.id,
+        verify:decoded.isVerify,
+        roleName:decoded.roleName,
+        displayName: decoded.name,
+        accessToken: token,
+        renewalToken: refreshToken,
+        token_type: "bearer",
+          
+      },"welcome back"))
+  }  
+      
+module.exports = { signup, signin,getOtp,verifyOTP ,forgetPassword,refreshToken};
 

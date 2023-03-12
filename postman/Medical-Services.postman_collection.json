@@ -100,6 +100,24 @@
 					"response": []
 				},
 				{
+					"name": "refreshToken",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \"phoneNumber\":\"+9647700095180\",\r\n    \"password\":\"weqewq\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}:5000/admin/auth/forgetPassword"
+					},
+					"response": []
+				},
+				{
 					"name": "get 1 user by id",
 					"request": {
 						"auth": {
