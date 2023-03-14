@@ -193,7 +193,7 @@ const addFavorite = async (req, res) => {
     let drr;
     let hff;
     if (type == "dr") {
-      drr = await dr.findFirst({ where: { id: idDr } });
+      drr = await dr.findFirst({ where: { id: idDr },include:{ user: { include: { address:true,setting: true, role: true }}} });
       if (!drr) return res.status(404).json(error(404, "Not Found"));
       if (req.user.id == idUser || req.user.roleName == "superadmin")
         hff = await User.update({
@@ -221,7 +221,7 @@ const addFavorite = async (req, res) => {
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
     }
-    res.json(success("201", hff, "done"));
+    res.json(success("201", hff,drr, "done"));
   } catch (err) {
     console.log(err);
     res.status(500).json(error(500, err));

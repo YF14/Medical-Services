@@ -132,7 +132,7 @@ const getDr = async (req, res) => {
   try {
     const drr = await dr.findUnique({
       where: { id: req.params.id },
-      include: { user: { include: { setting: true, role: true } },specialties:true },
+    include:{user: { include: { address:true,setting: true, role: true }} },
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
@@ -151,7 +151,7 @@ const getDrName = async (req, res) => {
   try {
     const drr = await dr.findFirst({
       where: { name: req.body.name },
-      include: { user: { include: { setting: true, role: true } },specialties:true },
+    include:{include :{user: { include: { address:true,setting: true, role: true }}  }},
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
@@ -183,7 +183,7 @@ const updateDr = async (req, res) => {
 
   try {
     const drr = await dr.update({where:{id:req.params.id},
-      include: { user: { include: { setting: true, role: true } },specialties:true },
+    include:{dr:{include :{user: { include: { address:true,setting: true, role: true }} } }},
 
       data: {
         description,
@@ -231,7 +231,7 @@ const deleteDr = async (req, res) => {
       where: {
         id: req.params.id,
       },
-      include: { user: { include: { setting: true, role: true } },specialties:true },
+    include:{dr:{include :{user: { include: { address:true,setting: true, role: true }} } }},
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
