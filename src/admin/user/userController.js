@@ -53,8 +53,9 @@ const getUser = async (req, res) => {
           setting: true,
           role: true,
           address: true,
-          favoritedr: true,
-          favoritehf: true,
+          favoritedr:{include :{user: { include: { address:true,setting: true, role: true }} } },
+          
+          favoritehf: {include :{user: { include: { address:true,setting: true, role: true }} } },
         },
       });
     }  if (!user) {
