@@ -67,12 +67,13 @@ const signin = async (req, res) => {
       where: {
         phoneNumber
       },
-      include:{role: true},
+      include:{role:true,dr:true,hf:true},
     });
     console.log(user);
     if (!user) {
       return res.status(404).json(error(404, "Not Found"));
     }
+    console.log("user:",user)
     let rol = user.role;
     if (rol.name === "superadmin" && !rol.isActive) {
       return res.status(404).json(error(400, "your status is disable"));
@@ -107,11 +108,15 @@ const signin = async (req, res) => {
         expiresIn: 7200, 
       }
     );
-
+    let ID=0
+    if(user.role.name=="dr")
+    ID=user.dr.id
+    else if(user.role.name=="hf")
+    ID=user.hf.id
     return res.status(200).json(
       success(
         200,
-        {
+        { drIdOrHfId:ID,
           id:user.id,
           verify:user.role.isVerify,
           roleName:user.role.name,
