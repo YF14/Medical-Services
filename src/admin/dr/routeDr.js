@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {getAllDr,getDr,deleteDr,updateDr,signup,addSpecialties,getAllDrSameSpec,getDrName} = require('./controllerDr')
+const {getAllDr,getDr,deleteDr,updateDr,signup,addSpecialties,getAllDrSameSpec,changeAvailable} = require('./controllerDr')
 const {verifyToken,checkUserDuplicate}=require('../auth/verifyToken')
 const {check, body,param} = require('express-validator')
 
@@ -10,7 +10,7 @@ router.post('/signup',check('phoneNumber').not().isEmpty().isLength({min:6,max:5
 router.get('/',verifyToken(["user","hf","dr","superadmin"]),getAllDr )
 router.post('/getAllDrSameSpec',verifyToken(["user","hf","dr","superadmin"]),getAllDrSameSpec )
 router.get('/:id',verifyToken(["user","hf","dr","superadmin"]),getDr )
-// router.get('/one',verifyToken(["user","hf","dr","superadmin"]),getDrName )
+router.post('/changeAvailable',verifyToken(["hf","dr","superadmin"]),changeAvailable )
 router.post('/addSpecialties',check('name').not().isEmpty().withMessage('name is required'),verifyToken(["dr","superadmin"]),addSpecialties)
 
 // ,verifyToken

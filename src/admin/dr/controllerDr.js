@@ -271,6 +271,27 @@ const addSpecialties = async (req, res) => {
     res.status(500).json(error(500, err));
   }
 };
+
+const changeAvailable = async (req, res) => {
+  try {let id=req.body.id
+    let drr = await dr.findUnique({where:{id}})
+       if(!drr)
+       return res.status(404).json(error(404, "Not Found"));
+     drr = await dr.update({where:{id},  
+        data: {
+          isAvailable:req.body.available
+          }
+      });
+   
+
+    if (!drr) {
+      return res.status(404).json(error(404, "Not Found"));
+    }
+    res.json(success("201", drr, "done"));
+  } catch (err) {console.log(err)
+    res.status(500).json(error(500, err));
+  }
+};
 module.exports = {
   getAllDr,
   getDr,
@@ -279,5 +300,6 @@ module.exports = {
   signup,
   addSpecialties,
   getAllDrSameSpec,
-  getDrName
+  getDrName,
+  changeAvailable
 };

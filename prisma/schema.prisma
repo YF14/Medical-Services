@@ -70,6 +70,7 @@ model Dr {
   description String?       @db.Text
   magerSpecialties  String
   specialties Specialties[]
+  isAvailable Boolean @default(false)
   favuser     User[]        @relation("fav")
   hf          Hf?           @relation(fields: [hfId], references: [id])
   hfId        String?       @db.Uuid
@@ -86,6 +87,7 @@ model Hf {
   openAt             Int
   closeAt            Int
   specialtiesNumbers Int           @default(0)
+  isAvailable Boolean
   description        String?       @db.Text
   favUser            User[]        @relation("favhf")
   specialties        Specialties[]
