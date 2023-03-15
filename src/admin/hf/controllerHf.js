@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { hf, user, role, setting,address,dr,Specialties } = new PrismaClient();
+const { hf, User, role, setting,address,dr,Specialties } = new PrismaClient();
 
 const signup = async (req, res) => {
   let errors = validationResult(req).array();
@@ -29,6 +29,7 @@ const signup = async (req, res) => {
       openAt,
       closeAt,
       specialtiesNumbers,
+      rating,isAvailable
     } = req.body;
     const hff = await hf.create({
       data: {
@@ -37,6 +38,8 @@ const signup = async (req, res) => {
         openAt,
         drNumbers,
         specialtiesNumbers,
+        rating,
+        isAvailable,
         user: {
           create: {
             phoneNumber,
@@ -96,6 +99,7 @@ const getAllHf = async (req, res) => {
   return res.status(500).json(error(500, errorr));
 
 }};
+
 const getHf = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -110,6 +114,27 @@ const getHf = async (req, res) => {
       return res.status(404).json(error(404, "Not Found"));
     }
     res.json(success("200", hff, "sdas"));
+  } catch (err) {
+    console.log("ewaweaw", err);
+    return res.status(500).json(error(500, "server side error"));
+  }
+};
+const getNearMe = async (req, res) => {
+  let errors = validationResult(req).array();
+  if (errors && errors.length > 0) {
+    return res.status(400).json(error(400, errors));
+  }
+  
+  let user = await User.findFirst({where:{id:req.user.id},include:{address:true}})
+  if (!user) 
+  return res.status(404).json(error(404, "Not Found"));
+
+  try {
+    const drr = await hf.findMany({where:{user:{address:{city:user.address.city}}},include:{user:{include:{address:true,role:true,setting:true}}}});
+    if (!drr) {
+      return res.status(404).json(error(404, "Not Found"));
+    } 
+    res.json(success("200", drr, "done"));
   } catch (err) {
     console.log("ewaweaw", err);
     return res.status(500).json(error(500, "server side error"));
@@ -131,6 +156,8 @@ const updateHf = async (req, res) => {
     openAt,
     closeAt,
     bio,
+    rating,
+    isAvailable
   } = req.body;
 
   try {
@@ -143,6 +170,8 @@ const updateHf = async (req, res) => {
         openAt,
         cost,
         xp,
+        rating,
+        isAvailable,
         user: {
           update: {
            
@@ -251,6 +280,35 @@ const addSpecialties = async (req, res) => {
     res.status(500).json(error(500, err));
   }
 };
+const getAllHfByRating = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await dr.count();
+    if (!count > 0) return res.status(404).json("empty");
+
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const drr = await hf.findMany({
+      orderBy: {rating:{ sort: 'desc', nulls: 'last' }},
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+            user: { include: { address: true, setting: true, role: true } },
+    
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
 module.exports = {
   getAllHf,
   getHf,
@@ -258,5 +316,7 @@ module.exports = {
   deleteHf,
   signup,
   addDr,
-  addSpecialties
+  addSpecialties,
+  getNearMe,
+  getAllHfByRating
 };

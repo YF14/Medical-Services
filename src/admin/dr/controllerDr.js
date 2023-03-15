@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const { success, error } = require("../../../utiles/responser");
 let bcrypt = require("bcryptjs");
 const { PrismaClient, Prisma } = require("@prisma/client");
-const { dr, user, role, setting, address,Specialties } = new PrismaClient();
+const { dr, User, role, setting, address, Specialties } = new PrismaClient();
 
 const signup = async (req, res) => {
   let errors = validationResult(req).array();
@@ -29,7 +29,7 @@ const signup = async (req, res) => {
       openAt,
       closeAt,
       xp,
-      magerSpecialties
+      magerSpecialties,rating
     } = req.body;
     const drr = await dr.create({
       data: {
@@ -39,6 +39,7 @@ const signup = async (req, res) => {
         cost,
         xp,
         magerSpecialties,
+        rating,
         user: {
           create: {
             phoneNumber,
@@ -77,53 +78,92 @@ const getAllDr = async (req, res) => {
   const page = parseInt(req.query.page);
   try {
     const count = await dr.count();
-  
-  if(!count>0)
-  return res.status(404).json("empty");
 
-  let sizes = 2;
-  let pages = 1;
-  if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
-  if (!Number.isNaN(page) && page > 0) pages = page;
-  let nPage = Math.ceil(count / sizes);
-  if (pages > nPage) pages = nPage;
-  const drr = await dr.findMany({
-    skip: (pages - 1) * sizes,
-    take: sizes,
-    include: { user: { include: { setting: true, role: true,address:true } },specialties:true },
-  });
-  console.log("SdSD", sizes, pages, nPage);
-  res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
-} catch (errorr) {console.log(errorr)
-  return res.status(500).json(error(500, errorr));
+    if (!count > 0) return res.status(404).json("empty");
 
-}};
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const drr = await dr.findMany({
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+        user: { include: { setting: true, role: true, address: true } },
+        specialties: true,
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
 const getAllDrSameSpec = async (req, res) => {
   const size = parseInt(req.query.size);
   const page = parseInt(req.query.page);
   try {
     const count = await dr.count();
-  const {name}=req.body
-  if(!count>0)
-  return res.status(404).json("empty");
+    const { name } = req.body;
+    if (!count > 0) return res.status(404).json("empty");
 
-  let sizes = 2;
-  let pages = 1;
-  if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
-  if (!Number.isNaN(page) && page > 0) pages = page;
-  let nPage = Math.ceil(count / sizes);
-  if (pages > nPage) pages = nPage;
-  const drr = await Specialties.findMany({where:{name},
-    skip: (pages - 1) * sizes,
-    take: sizes,
-    include:{dr:{include :{user: { include: { address:true,setting: true, role: true }} } }},
-  });
-  console.log("SdSD", sizes, pages, nPage);
-  res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
-} catch (errorr) {console.log(errorr)
-  return res.status(500).json(error(500, errorr));
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const drr = await Specialties.findMany({
+      where: { name },
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+        dr: {
+          include: {
+            user: { include: { address: true, setting: true, role: true } },
+          },
+        },
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
+const getAllDrByRating = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await dr.count();
+    if (!count > 0) return res.status(404).json("empty");
 
-}};
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const drr = await dr.findMany({
+      orderBy: {rating:{ sort: 'desc', nulls: 'last' }},
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+            user: { include: { address: true, setting: true, role: true } },
+    
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
 const getDr = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -132,12 +172,35 @@ const getDr = async (req, res) => {
   try {
     const drr = await dr.findUnique({
       where: { id: req.params.id },
-    include:{user: { include: { address:true,setting: true, role: true }} },
+      include: {
+        user: { include: { address: true, setting: true, role: true } },
+      },
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     }
     res.json(success("200", drr, "sdas"));
+  } catch (err) {
+    console.log("ewaweaw", err);
+    return res.status(500).json(error(500, "server side error"));
+  }
+};
+const getNearMe = async (req, res) => {
+  let errors = validationResult(req).array();
+  if (errors && errors.length > 0) {
+    return res.status(400).json(error(400, errors));
+  }
+  
+  let user = await User.findFirst({where:{id:req.user.id},include:{address:true}})
+  if (!user) 
+  return res.status(404).json(error(404, "Not Found"));
+
+  try {
+    const drr = await dr.findMany({where:{user:{address:{city:user.address.city}}},include:{user:{include:{address:true,role:true,setting:true}}}});
+    if (!drr) {
+      return res.status(404).json(error(404, "Not Found"));
+    } 
+    res.json(success("200", drr, "done"));
   } catch (err) {
     console.log("ewaweaw", err);
     return res.status(500).json(error(500, "server side error"));
@@ -151,12 +214,16 @@ const getDrName = async (req, res) => {
   try {
     const drr = await dr.findFirst({
       where: { name: req.body.name },
-    include:{include :{user: { include: { address:true,setting: true, role: true }}  }},
+      include: {
+        include: {
+          user: { include: { address: true, setting: true, role: true } },
+        },
+      },
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     }
-    res.json(success("200", drr, "sdas"));
+    res.json(success("200", drr, "done"));
   } catch (err) {
     console.log("ewaweaw", err);
     return res.status(500).json(error(500, "server side error"));
@@ -178,12 +245,20 @@ const updateDr = async (req, res) => {
     openAt,
     closeAt,
     bio,
-    magerSpecialties
+    magerSpecialties,
+    rating
   } = req.body;
 
   try {
-    const drr = await dr.update({where:{id:req.params.id},
-    include:{dr:{include :{user: { include: { address:true,setting: true, role: true }} } }},
+    const drr = await dr.update({
+      where: { id: req.params.id },
+      include: {
+        dr: {
+          include: {
+            user: { include: { address: true, setting: true, role: true } },
+          },
+        },
+      },
 
       data: {
         description,
@@ -192,12 +267,10 @@ const updateDr = async (req, res) => {
         cost,
         xp,
         magerSpecialties,
+        rating,
         user: {
           update: {
-           
             name,
-          
-
 
             setting: {
               update: {
@@ -231,7 +304,13 @@ const deleteDr = async (req, res) => {
       where: {
         id: req.params.id,
       },
-    include:{dr:{include :{user: { include: { address:true,setting: true, role: true }} } }},
+      include: {
+        dr: {
+          include: {
+            user: { include: { address: true, setting: true, role: true } },
+          },
+        },
+      },
     });
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
@@ -242,53 +321,52 @@ const deleteDr = async (req, res) => {
   }
 };
 
-
 const addSpecialties = async (req, res) => {
-  try {let name=req.body.name
+  try {
+    let name = req.body.name;
 
-   let spec = await Specialties.findMany({where:{name:{in: name}}})
- console.log(spec)
-    if(!spec)
-    return res.status(404).json(error(404, "Not Found"));
+    let spec = await Specialties.findMany({ where: { name: { in: name } } });
+    console.log(spec);
+    if (!spec) return res.status(404).json(error(404, "Not Found"));
 
-    let id = req.body.id
-    const hff = await dr.update({where:{id},  
-        data: {
-          specialties:{
-           
-              connect:spec.map(c => ({ id: parseInt(c.id)}))}
-             
-          
-          }
-      });
-   
+    let id = req.body.id;
+    const hff = await dr.update({
+      where: { id },
+      data: {
+        specialties: {
+          connect: spec.map((c) => ({ id: parseInt(c.id) })),
+        },
+      },
+    });
 
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
     }
     res.json(success("201", hff, "done"));
-  } catch (err) {console.log(err)
+  } catch (err) {
+    console.log(err);
     res.status(500).json(error(500, err));
   }
 };
 
 const changeAvailable = async (req, res) => {
-  try {let id=req.body.id
-    let drr = await dr.findUnique({where:{id}})
-       if(!drr)
-       return res.status(404).json(error(404, "Not Found"));
-     drr = await dr.update({where:{id},  
-        data: {
-          isAvailable:req.body.available
-          }
-      });
-   
+  try {
+    let id = req.body.id;
+    let drr = await dr.findUnique({ where: { id } });
+    if (!drr) return res.status(404).json(error(404, "Not Found"));
+    drr = await dr.update({
+      where: { id },
+      data: {
+        isAvailable: req.body.available,
+      },
+    });
 
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     }
     res.json(success("201", drr, "done"));
-  } catch (err) {console.log(err)
+  } catch (err) {
+    console.log(err);
     res.status(500).json(error(500, err));
   }
 };
@@ -301,5 +379,7 @@ module.exports = {
   addSpecialties,
   getAllDrSameSpec,
   getDrName,
-  changeAvailable
+  changeAvailable,
+  getNearMe,
+  getAllDrByRating
 };

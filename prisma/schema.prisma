@@ -3,11 +3,14 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["orderByNulls"]
+
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+
 }
 
 model User {
@@ -44,7 +47,7 @@ model Role {
   name     String  @default("user") @db.VarChar(255)
   isVerify Boolean @default(false)
   isActive Boolean @default(true)
-  user User?
+  user     User?
 }
 
 model Setting {
@@ -60,21 +63,22 @@ model Setting {
 }
 
 model Dr {
-  id          String        @id @default(uuid()) @db.Uuid
-  user        User?         @relation("dr", fields: [userId], references: [id], onDelete: Cascade)
-  userId      String?       @unique @db.Uuid
-  cost        Float
-  openAt      Int
-  closeAt     Int
-  xp          Int           @default(0)
-  description String?       @db.Text
-  magerSpecialties  String
-  specialties Specialties[]
-  isAvailable Boolean @default(false)
-  favuser     User[]        @relation("fav")
-  hf          Hf?           @relation(fields: [hfId], references: [id])
-  hfId        String?       @db.Uuid
-  booking     Booking[]
+  id      String  @id @default(uuid()) @db.Uuid
+  user    User?   @relation("dr", fields: [userId], references: [id], onDelete: Cascade)
+  userId  String? @unique @db.Uuid
+  cost    Float
+  openAt  Int
+  closeAt Int
+  rating  Float?
+  xp               Int           @default(0)
+  description      String?       @db.Text
+  magerSpecialties String
+  specialties      Specialties[]
+  isAvailable      Boolean       @default(false)
+  favuser          User[]        @relation("fav")
+  hf               Hf?           @relation(fields: [hfId], references: [id])
+  hfId             String?       @db.Uuid
+  booking          Booking[]
 
   bookingAv BookingAv[]
 }
@@ -86,8 +90,9 @@ model Hf {
   drNumbers          Int           @default(0)
   openAt             Int
   closeAt            Int
+  rating             Float?
   specialtiesNumbers Int           @default(0)
-  isAvailable Boolean
+  isAvailable        Boolean
   description        String?       @db.Text
   favUser            User[]        @relation("favhf")
   specialties        Specialties[]
@@ -95,11 +100,11 @@ model Hf {
 }
 
 model Specialties {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+  id    Int    @id @default(autoincrement())
+  name  String @db.VarChar(255)
   photo String
-  hf   Hf[]
-  dr   Dr[]
+  hf    Hf[]
+  dr    Dr[]
 }
 
 model BookingAv {
@@ -123,7 +128,7 @@ model Booking {
   phoneNumber Int
   name        String
   time        String
-  qrCode String
+  qrCode      String
 }
 
 model Otp {

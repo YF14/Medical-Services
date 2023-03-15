@@ -12,7 +12,7 @@ router.post('/changepassword', check('id').not().isEmpty().withMessage('id is re
 router.delete('/:id',checkUserDuplicate,verifyToken(["user","superadmin"]),deleteUser)
 router.post('/addFavorite', check('id').not().isEmpty().withMessage('id is required'),check('phoneNumber').not().isEmpty().withMessage('phoneNumber is required'),verifyToken(["user","superadmin"]),addFavorite)
 router.post('/removeFavorite', check('id').not().isEmpty().withMessage('id is required'),check('phoneNumber').not().isEmpty().withMessage('phoneNumber is required'),verifyToken(["user","superadmin"]),removeFavorite)
-router.get('/:id',checkUserDuplicate,verifyToken(["user","dr","hf","superadmin"]),getUser )
+router.get('/:id',checkUserDuplicate,getUser )
 // ,verifyToken
 // ,verifyToken
 // ,verifyToken

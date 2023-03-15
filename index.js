@@ -11,10 +11,10 @@ const hfRoute = require("./src/admin/hf/routeHf");
 const SpecialtiesRoute = require("./src/admin/specialties/routeSpecialties");
 const bookingRoute = require("./src/admin/booking/routeBooking");
 //////////
-const userRouteMobile = require("./src/mobile/user/userRoute");
-const drRouteMobile = require("./src/mobile/dr/routeDr");
-const hfRouteMobile = require("./src/mobile/hf/routeHf");
-const bookingRouteMobile = require("./src/mobile/booking/routeBooking");
+// const userRouteMobile = require("./src/mobile/user/userRoute");
+// const drRouteMobile = require("./src/mobile/dr/routeDr");
+// const hfRouteMobile = require("./src/mobile/hf/routeHf");
+// const bookingRouteMobile = require("./src/mobile/booking/routeBooking");
 app.use(express.json());
 app.use(cors());
 app.get("/", (req, res) => {
@@ -28,10 +28,10 @@ app.use("/admin/dr", drRoute);
 app.use("/admin/hf", hfRoute);
 app.use("/admin/Specialties", SpecialtiesRoute);
 app.use("/admin/booking", bookingRoute);
-/////
-app.use("/mobile/user", userRouteMobile);
-app.use("/mobile/dr", drRouteMobile);
-app.use("/mobile/hf", hfRouteMobile);
-app.use("/mobile/booking", bookingRouteMobile);
+// /////
+// app.use("/mobile/user", userRouteMobile);
+// app.use("/mobile/dr", drRouteMobile);
+// app.use("/mobile/hf", hfRouteMobile);
+// app.use("/mobile/booking", bookingRouteMobile);
 
 app.listen(APP_PORT);

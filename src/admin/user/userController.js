@@ -69,6 +69,7 @@ const getUser = async (req, res) => {
     console.log("ewaweaw", e);
   }
 };
+
 const updateUser = async (req, res) => {
   const { name, avatar, dob, gender, language, darkmode, bio, city, town } =
     req.body;
