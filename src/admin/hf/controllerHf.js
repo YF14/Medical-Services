@@ -125,12 +125,13 @@ const getNearMe = async (req, res) => {
     return res.status(400).json(error(400, errors));
   }
   
-  let user = await User.findFirst({where:{id:req.user.id},include:{address:true}})
+  let user = await User.findFirst({where:{id:req.user.id},include:{ address:true} 
+  })
   if (!user) 
   return res.status(404).json(error(404, "Not Found"));
 
   try {
-    const drr = await hf.findMany({where:{user:{address:{city:user.address.city}}},include:{user:{include:{address:true,role:true,setting:true}}}});
+    const drr = await hf.findMany({where:{user:{address:{city:user.address.city}}},include:{dr:true,specialties:true,user: { include: { setting: true, role: true }}}});
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     } 
@@ -297,10 +298,9 @@ const getAllHfByRating = async (req, res) => {
       orderBy: {rating:{ sort: 'desc', nulls: 'last' }},
       skip: (pages - 1) * sizes,
       take: sizes,
-      include: {
-            user: { include: { address: true, setting: true, role: true } },
+      
+        include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
     
-      },
     });
     console.log("SdSD", sizes, pages, nPage);
     res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));

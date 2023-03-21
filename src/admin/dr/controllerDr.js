@@ -123,7 +123,8 @@ const getAllDrSameSpec = async (req, res) => {
       include: {
         dr: {
           include: {
-            user: { include: { address: true, setting: true, role: true } },
+            user: { include: { setting: true, role: true, address: true } },
+            specialties: true,
           },
         },
       },
@@ -153,8 +154,8 @@ const getAllDrByRating = async (req, res) => {
       skip: (pages - 1) * sizes,
       take: sizes,
       include: {
-            user: { include: { address: true, setting: true, role: true } },
-    
+        user: { include: { setting: true, role: true, address: true } },
+        specialties: true,
       },
     });
     console.log("SdSD", sizes, pages, nPage);
@@ -173,7 +174,8 @@ const getDr = async (req, res) => {
     const drr = await dr.findUnique({
       where: { id: req.params.id },
       include: {
-        user: { include: { address: true, setting: true, role: true } },
+        user: { include: { setting: true, role: true, address: true } },
+        specialties: true,
       },
     });
     if (!drr) {
@@ -196,7 +198,9 @@ const getNearMe = async (req, res) => {
   return res.status(404).json(error(404, "Not Found"));
 
   try {
-    const drr = await dr.findMany({where:{user:{address:{city:user.address.city}}},include:{user:{include:{address:true,role:true,setting:true}}}});
+    const drr = await dr.findMany({where:{user:{address:{city:user.address.city}}},include:{user: { include: { setting: true, role: true, address: true } },
+      specialties: true,
+    }});
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     } 
