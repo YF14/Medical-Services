@@ -91,7 +91,7 @@ const getAllHf = async (req, res) => {
   const hff = await hf.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-    include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+    include: { dr:{include:{user: { include: { setting: true, role: true }}}},specialties:true,user: { include: { setting: true, role: true }} },
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`, hff, `TOTAL PAGES ${nPage}`));
@@ -108,7 +108,7 @@ const getHf = async (req, res) => {
   try {
     const hff = await hf.findUnique({
       where: { id: req.params.id },
-      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+      include: { dr:{include:{user: { include: { setting: true, role: true }}}},specialties:true,user: { include: { setting: true, role: true }} },
     });
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
@@ -131,7 +131,7 @@ const getNearMe = async (req, res) => {
   return res.status(404).json(error(404, "Not Found"));
 
   try {
-    const drr = await hf.findMany({where:{user:{address:{city:user.address.city}}},include:{dr:true,specialties:true,user: { include: { setting: true, role: true }}}});
+    const drr = await hf.findMany({where:{user:{address:{city:user.address.city}}},include:{dr:{include:{user: { include: { setting: true, role: true }}}},specialties:true,user: { include: { setting: true, role: true }}}});
     if (!drr) {
       return res.status(404).json(error(404, "Not Found"));
     } 
@@ -163,7 +163,7 @@ const updateHf = async (req, res) => {
 
   try {
     const hff = await hf.update({where:{id:req.params.id},
-      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+      include: { dr:{user: { include: { setting: true, role: true }}},specialties:true,user: { include: { setting: true, role: true }} },
 
       data: {
         description,
@@ -212,7 +212,7 @@ const deleteHf = async (req, res) => {
       where: {
         id: req.params.id,
       },
-      include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+      include: { dr:{include:{user: { include: { setting: true, role: true }}}},specialties:true,user: { include: { setting: true, role: true }} },
     });
     if (!hff) {
       return res.status(404).json(error(404, "Not Found"));
@@ -299,7 +299,7 @@ const getAllHfByRating = async (req, res) => {
       skip: (pages - 1) * sizes,
       take: sizes,
       
-        include: { dr:true,specialties:true,user: { include: { setting: true, role: true }} },
+        include: { dr:{include:{user: { include: { setting: true, role: true }}}},specialties:true,user: { include: { setting: true, role: true }} },
     
     });
     console.log("SdSD", sizes, pages, nPage);
