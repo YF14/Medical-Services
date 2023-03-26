@@ -8,6 +8,7 @@ const {
   userChangePassword,
   addFavorite,
   removeFavorite,
+  getFav
 } = require("./userController");
 const { verifyToken, checkUserDuplicate } = require("../auth/verifyToken");
 const { check, body, param } = require("express-validator");
@@ -57,6 +58,12 @@ router.get(
   verifyToken(["hf", "dr", "user", "superadmin"]),
   checkUserDuplicate,
   getUser
+);
+router.get(
+  "/getFav/:id",
+  verifyToken(["hf", "dr", "user", "superadmin"]),
+  checkUserDuplicate,
+  getFav
 );
 // ,verifyToken
 // ,verifyToken

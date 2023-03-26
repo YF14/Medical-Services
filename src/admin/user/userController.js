@@ -53,9 +53,8 @@ const getUser = async (req, res) => {
           setting: true,
           role: true,
           address: true,
-          favoritedr:{include :{user: { include: { address:true,setting: true, role: true }} } },
-          
-          favoritehf: {include :{user: { include: { address:true,setting: true, role: true }} } },
+          favoritedr:{include :{user: { include: { address:true,setting: true, role: true }}}},
+          favoritehf: {include :{user: { include: { address:true,setting: true, role: true }}}},
         },
       });
     }  if (!user) {
@@ -69,7 +68,30 @@ const getUser = async (req, res) => {
     console.log("ewaweaw", e);
   }
 };
-
+const getFav = async (req, res) => {
+  let errors = validationResult(req).array();
+  if (errors && errors.length > 0) {
+    return res.status(400).json(error(400, errors));
+  }
+  try {
+    let user;
+    if (req.user.id == req.params.id || req.user.roleName == "superadmin") {
+      user = await User.findUnique({
+        where: { id: req.params.id },
+        select: {
+          favoritedr:{include :{user: { include: { address:true,setting: true, role: true }}}},
+          favoritehf: {include :{user: { include: { address:true,setting: true, role: true }}}},
+        },
+      });
+    }  if (!user) {
+      return res.status(404).json(error(404, "Not Found"));
+    }
+ 
+    res.json(success("200", user, "sdas"));
+  } catch (e) {
+    console.log("ewaweaw", e);
+  }
+};
 const updateUser = async (req, res) => {
   const { name, avatar, dob, gender, language, darkmode, bio, city, town } =
     req.body;
@@ -280,4 +302,5 @@ module.exports = {
   userChangePassword,
   addFavorite,
   removeFavorite,
+  getFav
 };
