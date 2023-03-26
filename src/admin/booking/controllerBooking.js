@@ -88,7 +88,7 @@ const addBooking = async (req, res) => {
     const booking = await Booking.create({
       data: {time,
       name,
-      phoneNumber:parseInt(phoneNumber),
+      phoneNumber,
       qrCode,
       dr:{ 
         connect:{id:drId}

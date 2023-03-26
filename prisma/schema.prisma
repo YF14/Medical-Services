@@ -125,7 +125,7 @@ model Booking {
   id          String @id @default(uuid()) @db.Uuid
   user        User[]
   dr          Dr[]
-  phoneNumber Int
+  phoneNumber String
   name        String
   time        String
   qrCode      String
