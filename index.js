@@ -15,6 +15,7 @@ const bookingRoute = require("./src/admin/booking/routeBooking");
 // const drRouteMobile = require("./src/mobile/dr/routeDr");
 // const hfRouteMobile = require("./src/mobile/hf/routeHf");
 // const bookingRouteMobile = require("./src/mobile/booking/routeBooking");
+
 app.use(express.json());
 app.use(cors());
 app.get("/", (req, res) => {

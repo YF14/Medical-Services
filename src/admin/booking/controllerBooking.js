@@ -6,18 +6,19 @@ const { PrismaClient, Prisma } = require("@prisma/client");
 const { Booking,BookingAv,time } = new PrismaClient();
 var moment = require('moment-timezone');
 moment().tz('Asia/Baghdad').format();
+
 const addbookingAv = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
 
-  try {const {time,date,start,end,drId} = req.body;
-    
+  try {let {time,date,start,end,drId} = req.body;
+   
   
 
      const check = await BookingAv.findMany({
-    where :{date: moment(date).format(),dr:{every:{id:drId}}},
+    where :{date: moment(date).add(6, 'hours').format(),dr:{id:drId}},
    })
    console.log(check)
 if (check.length>0)
@@ -30,12 +31,13 @@ let timeStart=start.split(':')
      time_end.setHours(timeEnd[0], timeEnd[1], 0)
 
 let total =(((time_end - time_start)/60000 )/time) // millisecond 
+console.log(total)
 let i=0
-let timee=new Array(new Date(time_start.getTime()));
+let timee=new Array(moment(time_start.getTime()).format());
 while(i<total-1)
 { let temp = new Date(timee[i])
   
-  timee.push(`${new Date(temp.getTime() + time*60000)}`)
+  timee.push(`${moment(temp.getTime() + time*60000).format()}`)
   i++
 }
   i=0
@@ -45,15 +47,15 @@ while(i<total-1)
   resulte[i]=[(`${temp.getHours() + ':' + temp.getMinutes()}`)]
   i++
 } 
+console.log(moment(date).add(6, 'hours').format(),)
 console.log(resulte)
-
  const bookingAv= await BookingAv.create({
       data: {
       time:{ create: resulte.map(e => ({ time:e.toString()})),
       },
-        
-      
-      date:moment(date).format(),
+        openAt:start,
+        closeAt:end,
+      date:moment(date).add(6, 'hours').format()     ,
       dr:{
              
         connect:{id:drId}
@@ -78,7 +80,7 @@ const addBooking = async (req, res) => {
    
     
    const check = await BookingAv.findFirst({include:{time:{where:{time:time,av:true}}},
-    where :{date: moment(date).format(),dr:{every:{id:drId}}},
+    where :{date: moment(date).add(6, 'hours').format(),dr:{id:drId}},
   })
 
      
@@ -130,7 +132,7 @@ const getAllBookingAv = async (req, res) => {
   const booking = await BookingAv.findMany({
     skip: (pages - 1) * sizes,
     take: sizes,
-   include:{time :true,dr:true}
+   include:{time :true,dr:{include:{user: { include: { setting: true, role: true, address: true }}}}}
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`,booking, `TOTAL PAGES ${nPage}`));
@@ -143,10 +145,12 @@ const getAllBookingAvByDr= async (req, res) => {
   const page = parseInt(req.query.page);
   try {
     const count = await BookingAv.count();
-  
+
   if(!count>0)
   return res.status(404).json("empty");
-
+  console.log("sadd","asdas")
+  let {id,date} =req.body
+  date=moment(date).add(6, 'hours').format()
   let sizes = 2;
   let pages = 1;
   if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
@@ -154,9 +158,41 @@ const getAllBookingAvByDr= async (req, res) => {
   let nPage = Math.ceil(count / sizes);
   if (pages > nPage) pages = nPage;
   const booking = await BookingAv.findMany({
+    where:{dr:{id:id},date:{gte:date}},
     skip: (pages - 1) * sizes,
     take: sizes,
-   include:{time :true,dr:{where:{id:req.params.id}}}
+   include:{dr:{include:{user: { include: { setting: true, role: true, address: true }}}}},
+   
+  });
+  console.log("SdSD", sizes, pages, nPage);
+  res.json(success(`current_page: ${pages}`,booking, `TOTAL PAGES ${nPage}`));
+} catch (errorr) {console.log(errorr)
+  return res.status(500).json(error(500, errorr));
+
+}};
+const getAllBookingAvbyDate= async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await BookingAv.count();
+
+  if(!count>0)
+  return res.status(404).json("empty");
+  console.log("sadd","asdas")
+  let {id,date} =req.body
+  date=moment(date).add(6, 'hours').format()
+  let sizes = 2;
+  let pages = 1;
+  if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+  if (!Number.isNaN(page) && page > 0) pages = page;
+  let nPage = Math.ceil(count / sizes);
+  if (pages > nPage) pages = nPage;
+  const booking = await BookingAv.findMany({
+    where:{dr:{id:id},date},
+    skip: (pages - 1) * sizes,
+    take: sizes,
+   select:{date:true,time :{orderBy:[{time:'desc'}]},},
+   
   });
   console.log("SdSD", sizes, pages, nPage);
   res.json(success(`current_page: ${pages}`,booking, `TOTAL PAGES ${nPage}`));
@@ -172,7 +208,7 @@ const getBookingAv = async (req, res) => {
   let id =req.params.id
   try {
     const booking = await BookingAv.findUnique({
-      where: { id:id},
+      where: { id},
       include:{time :true,dr:true}
     });
     if (!booking) {
@@ -191,7 +227,7 @@ const updateBooking = async (req, res) => {
   
    const check = await BookingAv.findFirst(
     {include:{time:{where:{time:time,av:true}}},
-    where :{date: moment(date).format(),dr:{every:{id:drId}}},
+    where :{date: moment(date).add(6, 'hours').format(),dr:{d:drId}},
 
     
      
@@ -312,5 +348,6 @@ module.exports = {getAllBooking,
    addBooking,
   addbookingAv,
   getAllBookingAvByDr,
-  getAllBookingByUser
+  getAllBookingByUser,
+  getAllBookingAvbyDate
 };

@@ -2,15 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["orderByNulls"]
-
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-
 }
 
 model User {
@@ -63,13 +61,13 @@ model Setting {
 }
 
 model Dr {
-  id      String  @id @default(uuid()) @db.Uuid
-  user    User?   @relation("dr", fields: [userId], references: [id], onDelete: Cascade)
-  userId  String? @unique @db.Uuid
-  cost    Float
-  openAt  Int
-  closeAt Int
-  rating  Float?
+  id               String        @id @default(uuid()) @db.Uuid
+  user             User?         @relation("dr", fields: [userId], references: [id], onDelete: Cascade)
+  userId           String?       @unique @db.Uuid
+  cost             Float
+  openAt           Int
+  closeAt          Int
+  rating           Float?
   xp               Int           @default(0)
   description      String?       @db.Text
   magerSpecialties String
@@ -109,22 +107,27 @@ model Specialties {
 
 model BookingAv {
   id   String   @id @default(uuid()) @db.Uuid
-  dr   Dr[]
+  dr   Dr       @relation(fields: [drId], references: [id])
+  drId String   @db.Uuid
   date DateTime @db.Date
+  openAt String
+  closeAt String
   time TimeAv[]
 }
 
 model TimeAv {
   id        String      @id @default(uuid()) @db.Uuid
   av        Boolean     @default(true)
-  time      String
+  time      String  
   BookingAv BookingAv[]
 }
 
 model Booking {
   id          String @id @default(uuid()) @db.Uuid
-  user        User[]
-  dr          Dr[]
+  user        User @relation(fields: [userId], references: [id])
+  userId      String @db.Uuid
+  dr          Dr   @relation(fields: [drId], references: [id])
+  drId        String @db.Uuid
   phoneNumber String
   name        String
   time        String

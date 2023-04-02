@@ -10,7 +10,9 @@ const {
   getAllDrSameSpec,
   changeAvailable,
   getNearMe,
-  getAllDrByRating
+  getAllDrByRating,
+  getAllDrByGender,
+  getAllDrByCost
 } = require("./controllerDr");
 const { verifyToken, checkUserDuplicate } = require("../auth/verifyToken");
 const { check, body, param } = require("express-validator");
@@ -35,6 +37,8 @@ router.get(
   );
 router.post("/getAllDrSameSpec", getAllDrSameSpec);
 router.get("/getAllDrByRating", getAllDrByRating);
+router.get("/getAllDrByGender", getAllDrByGender);
+router.get("/getAllDrByCost", getAllDrByCost);
 
 router.get("/:id", getDr);
 router.post(

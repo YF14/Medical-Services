@@ -165,6 +165,67 @@ const getAllDrByRating = async (req, res) => {
     return res.status(500).json(error(500, errorr));
   }
 };
+const getAllDrByGender = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await dr.count();
+    if (!count > 0) return res.status(404).json("empty");
+
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const drr = await dr.findMany({
+where:{user:{setting:{gender:req.body.gender}}}
+,      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+        user: { include: { setting: true, role: true, address: true } },
+        specialties: true,
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
+const getAllDrByCost = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await dr.count();
+    if (!count > 0) return res.status(404).json("empty");
+
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    console.log("Test")
+
+    const drr = await dr.findMany({
+      orderBy: {cost:Prisma.SortOrder.desc },
+
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+        user: { include: { setting: true, role: true, address: true } },
+        specialties: true,
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
 const getDr = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -192,22 +253,36 @@ const getNearMe = async (req, res) => {
   if (errors && errors.length > 0) {
     return res.status(400).json(error(400, errors));
   }
-  
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
   let user = await User.findFirst({where:{id:req.user.id},include:{address:true}})
   if (!user) 
   return res.status(404).json(error(404, "Not Found"));
 
   try {
-    const drr = await dr.findMany({where:{user:{address:{city:user.address.city}}},include:{user: { include: { setting: true, role: true, address: true } },
-      specialties: true,
-    }});
-    if (!drr) {
-      return res.status(404).json(error(404, "Not Found"));
-    } 
-    res.json(success("200", drr, "done"));
-  } catch (err) {
-    console.log("ewaweaw", err);
-    return res.status(500).json(error(500, "server side error"));
+    const count = await dr.count();
+    if (!count > 0) return res.status(404).json("empty");
+
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const drr = await dr.findMany({
+      where:{user:{address:{city:user.address.city}}},
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: {
+        user: { include: { setting: true, role: true, address: true } },
+        specialties: true,
+      },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(success(`current_page: ${pages}`, drr, `TOTAL PAGES ${nPage}`));
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
   }
 };
 const getDrName = async (req, res) => {
@@ -385,5 +460,7 @@ module.exports = {
   getDrName,
   changeAvailable,
   getNearMe,
-  getAllDrByRating
+  getAllDrByRating,
+  getAllDrByGender,
+  getAllDrByCost
 };
