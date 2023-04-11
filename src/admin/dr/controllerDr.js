@@ -142,6 +142,7 @@ const getAllDrByRating = async (req, res) => {
   try {
     const count = await dr.count();
     if (!count > 0) return res.status(404).json("empty");
+    const { name } = req.body;
 
     let sizes = 2;
     let pages = 1;
@@ -150,6 +151,8 @@ const getAllDrByRating = async (req, res) => {
     let nPage = Math.ceil(count / sizes);
     if (pages > nPage) pages = nPage;
     const drr = await dr.findMany({
+      where: { specialties:{some:{name:{in:name}}} },
+
       orderBy: {rating:{ sort: 'desc', nulls: 'last' }},
       skip: (pages - 1) * sizes,
       take: sizes,
@@ -171,6 +174,7 @@ const getAllDrByGender = async (req, res) => {
   try {
     const count = await dr.count();
     if (!count > 0) return res.status(404).json("empty");
+    const { name } = req.body;
 
     let sizes = 2;
     let pages = 1;
@@ -179,7 +183,7 @@ const getAllDrByGender = async (req, res) => {
     let nPage = Math.ceil(count / sizes);
     if (pages > nPage) pages = nPage;
     const drr = await dr.findMany({
-where:{user:{setting:{gender:req.body.gender}}}
+where:{user:{setting:{gender:req.body.gender}},specialties:{some:{name:{in:name}}}}
 ,      skip: (pages - 1) * sizes,
       take: sizes,
       include: {
@@ -200,7 +204,7 @@ const getAllDrByCost = async (req, res) => {
   try {
     const count = await dr.count();
     if (!count > 0) return res.status(404).json("empty");
-
+let {name}=req.body
     let sizes = 2;
     let pages = 1;
     if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
@@ -208,9 +212,11 @@ const getAllDrByCost = async (req, res) => {
     let nPage = Math.ceil(count / sizes);
     if (pages > nPage) pages = nPage;
     console.log("Test")
-
+let type =req.body.type
+ console.log(type)
     const drr = await dr.findMany({
-      orderBy: {cost:Prisma.SortOrder.desc },
+    where:{ specialties:{some:{name:{in:name}}}},
+      orderBy: {cost:type=="high"?Prisma.SortOrder.desc:Prisma.SortOrder.asc },
 
       skip: (pages - 1) * sizes,
       take: sizes,

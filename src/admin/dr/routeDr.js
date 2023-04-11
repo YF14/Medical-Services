@@ -36,9 +36,9 @@ router.get(
     getNearMe
   );
 router.post("/getAllDrSameSpec", getAllDrSameSpec);
-router.get("/getAllDrByRating", getAllDrByRating);
-router.get("/getAllDrByGender", getAllDrByGender);
-router.get("/getAllDrByCost", getAllDrByCost);
+router.post("/getAllDrByRating", getAllDrByRating);
+router.post("/getAllDrByGender", getAllDrByGender);
+router.post("/getAllDrByCost", getAllDrByCost);
 
 router.get("/:id", getDr);
 router.post(
