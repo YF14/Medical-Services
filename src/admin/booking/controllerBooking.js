@@ -222,7 +222,7 @@ const getBookingAv = async (req, res) => {
   try {
     const booking = await BookingAv.findUnique({
       where: { id },
-      include: { time: true, dr: true },
+      include: { time: true, dr: {include:{user:true}} },
     });
     if (!booking) {
       return res.status(404).json(error(404, "Not Found"));
@@ -293,7 +293,7 @@ const getAllBooking = async (req, res) => {
     const booking = await Booking.findMany({
       skip: (pages - 1) * sizes,
       take: sizes,
-      include: { user: true, dr: true },
+      include: { user: true,dr: {include:{user:true}} },
     });
     console.log("SdSD", sizes, pages, nPage);
     res.json(
@@ -322,7 +322,7 @@ const getAllBookingByUser = async (req, res) => {
       where: { userId: req.params.id },
       skip: (pages - 1) * sizes,
       take: sizes,
-      include: { user: true, dr: true },
+      include: { user: true, dr: {include:{user:true}} },
     });
     console.log("SdSD", sizes, pages, nPage);
     res.json(
@@ -342,7 +342,7 @@ const getBooking = async (req, res) => {
   try {
     const booking = await Booking.findUnique({
       where: { id: id },
-      include: { user: true, dr: true },
+      include: { user: true, dr: {include:{user:true}} },
     });
     if (!booking) {
       return res.status(404).json(error(404, "Not Found"));
