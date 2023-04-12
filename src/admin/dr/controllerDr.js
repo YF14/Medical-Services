@@ -214,7 +214,7 @@ let {name}=req.body
     console.log("Test")
 let type =req.body.type
  console.log(type)
-    const drr = await dr.findMany({
+    const drr = await dr.findMany({ 
     where:{ specialties:{some:{name:{in:name}}}},
       orderBy: {cost:type=="high"?Prisma.SortOrder.desc:Prisma.SortOrder.asc },
 
