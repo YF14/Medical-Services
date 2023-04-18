@@ -131,6 +131,7 @@ model Booking {
   phoneNumber String
   name        String
   time        String
+  date String
   qrCode      String
 }
 

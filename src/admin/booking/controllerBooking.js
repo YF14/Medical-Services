@@ -86,6 +86,7 @@ const addBooking = async (req, res) => {
         name,
         phoneNumber,
         qrCode,
+        date:moment(date).add(6, "hours").format(),
         dr: {
           connect: { id: drId },
         },
