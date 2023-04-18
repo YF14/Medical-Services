@@ -3,7 +3,8 @@
 		"_postman_id": "a8c8eec9-ab55-4361-99c1-5634dcb0bc6c",
 		"name": "Medical-Services",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "23917616"
+		"_exporter_id": "23917616",
+		"_collection_link": "https://crimson-capsule-613421.postman.co/workspace/career1~fc6fd00d-b47d-439f-a5af-f4fec93e8039/collection/23917616-a8c8eec9-ab55-4361-99c1-5634dcb0bc6c?action=share&creator=23917616&source=collection_link"
 	},
 	"item": [
 		{
@@ -1184,7 +1185,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"start\":\"5:00\",\r\n    \"end\":\"15:00\",\r\n    \"time\":\"30\",\r\n    \"date\":\"12/4/2023\",\r\n    \"drId\":\"2c00fff3-96f0-4d44-ba73-545a249e29e6\"\r\n}",
+							"raw": "{\r\n    \"start\":\"5:00\",\r\n    \"end\":\"15:00\",\r\n    \"time\":\"30\",\r\n    \"date\":\"12/4/2023\",\r\n    \"drId\":\"8ea2f109-5968-4581-805c-54381fc20e03\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1208,7 +1209,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phoneNumber\":\"21242421412\",\r\n\"name\":\"qweqwe\",\r\n    \"time\":\"4:30\",\r\n    \"qrCode\":\"weq\",\r\n    \"date\":\"11/18/2023\",\r\n    \"drId\":\"3e370ed9-9ae6-4034-b923-2bd5480a5b38\",\r\n    \"userId\":\"eef0e6df-e07f-42f1-88d6-a2a801aeee6a\"\r\n}",
+							"raw": "{\r\n    \"phoneNumber\":\"21242421412\",\r\n\"name\":\"qweqwe\",\r\n    \"time\":\"5:30\",\r\n    \"qrCode\":\"weq\",\r\n    \"date\":\"12/4/2023\",\r\n    \"drId\":\"8ea2f109-5968-4581-805c-54381fc20e03\",\r\n    \"userId\":\"acd35d3a-c7a4-4827-a110-e7139bd34aaf\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1455,7 +1456,28 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost:5000/admin/booking/user/acc033cb-ab28-49de-9ac8-74b7d508fbbc"
+						"url": "http://localhost:5000/admin/booking/user/acd35d3a-c7a4-4827-a110-e7139bd34aaf"
+					},
+					"response": []
+				},
+				{
+					"name": "get all booking by Dr",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:5000/admin/booking/dr/8ea2f109-5968-4581-805c-54381fc20e03"
 					},
 					"response": []
 				},

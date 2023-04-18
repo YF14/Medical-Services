@@ -334,6 +334,35 @@ const getAllBookingByUser = async (req, res) => {
     return res.status(500).json(error(500, errorr));
   }
 };
+const getAllBookingByDr = async (req, res) => {
+  const size = parseInt(req.query.size);
+  const page = parseInt(req.query.page);
+  try {
+    const count = await Booking.count();
+
+    if (!count > 0) return res.status(404).json("empty");
+
+    let sizes = 2;
+    let pages = 1;
+    if (!Number.isNaN(size) && size > 0 && size <= 10) sizes = size;
+    if (!Number.isNaN(page) && page > 0) pages = page;
+    let nPage = Math.ceil(count / sizes);
+    if (pages > nPage) pages = nPage;
+    const booking = await Booking.findMany({
+      where: { drId: req.params.id },
+      skip: (pages - 1) * sizes,
+      take: sizes,
+      include: { user: true },
+    });
+    console.log("SdSD", sizes, pages, nPage);
+    res.json(
+      success(`current_page: ${pages}`, booking, `TOTAL PAGES ${nPage}`)
+    );
+  } catch (errorr) {
+    console.log(errorr);
+    return res.status(500).json(error(500, errorr));
+  }
+};
 const getBooking = async (req, res) => {
   let errors = validationResult(req).array();
   if (errors && errors.length > 0) {
@@ -367,4 +396,5 @@ module.exports = {
   getAllBookingAvByDr,
   getAllBookingByUser,
   getAllBookingAvbyDate,
+  getAllBookingByDr
 };
