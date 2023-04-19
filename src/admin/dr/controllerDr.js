@@ -276,7 +276,7 @@ const getNearMe = async (req, res) => {
     let nPage = Math.ceil(count / sizes);
     if (pages > nPage) pages = nPage;
     const drr = await dr.findMany({
-      where:{user:{address:{city:user.address.city}}},
+      where:{user:{address:{city:user.address.city}},specialties:{some:{name:{in:req.body.name}}}},
       skip: (pages - 1) * sizes,
       take: sizes,
       include: {
